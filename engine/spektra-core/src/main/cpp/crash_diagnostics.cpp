@@ -19,10 +19,11 @@ constexpr int kSignals[] = {SIGABRT, SIGSEGV, SIGBUS, SIGFPE, SIGILL};
 constexpr size_t kSignalCount = sizeof(kSignals) / sizeof(kSignals[0]);
 constexpr size_t kPathCapacity = 512;
 constexpr size_t kRecordCapacity = 512;
+constexpr size_t kSignalStackSize = 64 * 1024;
 
 char g_record_path[kPathCapacity];
 struct sigaction g_previous[kSignalCount];
-unsigned char g_signal_stack[SIGSTKSZ];
+unsigned char g_signal_stack[kSignalStackSize];
 bool g_installed = false;
 
 size_t literal_length(const char* text) {

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spektrafilm for Android. GPLv3. -->
+<!-- translatable="false" entries are copied verbatim so this file's key inventory stays
+     one-to-one with values/ and the resource-consistency test can prove it. They are never
+     translated: brand names, official model names, links and legal attribution stay as-is. -->
+<resources>
+    <!-- Shared across the secondary screens (Welcome, About, How-to, Settings, Diagnostics, Curves). -->
+    <string name="screen_back">返回</string>
+    <string name="screen_close">关闭</string>
+    <string name="screen_report_issue">报告问题</string>
+    <string name="screen_how_to_use_app">如何使用本应用</string>
+    <string name="screen_opens_in_browser">在浏览器中打开</string>
+    <string name="screen_dedication_pixls">献给 pixls.us 社区。</string>
+    <string name="screen_link_spektrafilm" translatable="false">spektrafilm</string>
+    <string name="screen_link_image_toolbox" translatable="false">Image Toolbox</string>
+    <string name="screen_link_colour_science" translatable="false">colour-science</string>
+    <string name="screen_link_libraw" translatable="false">LibRaw</string>
+    <string name="screen_link_pixls" translatable="false">pixls.us</string>
+    <string name="screen_link_source_code">源代码</string>
+
+    <!-- Welcome / onboarding (single page) -->
+    <string name="screen_welcome_page1_title">手机里的光谱暗房</string>
+    <string name="screen_welcome_page1_body">光谱胶片会通过物理建模的胶片和暗房相纸流程来渲染照片——它基于光谱计算，而不是预设滤镜。</string>
+    <string name="screen_welcome_steps">三步完成一张照片</string>
+    <string name="screen_welcome_step1_title">导入照片</string>
+    <string name="screen_welcome_step1_body">从相册或文件选择器打开 JPEG、HEIC 或 RAW/DNG。</string>
+    <string name="screen_welcome_step2_title">选择风格</string>
+    <string name="screen_welcome_step2_body">先选一个内置风格，再决定是否更换胶片和相纸。</string>
+    <string name="screen_welcome_step3_title">微调并保存</string>
+    <string name="screen_welcome_step3_body">调整强度、曝光与颗粒，然后以完整分辨率保存到相册。</string>
+    <string name="screen_welcome_privacy">解码、胶片模拟和导出全部在这台手机上完成。照片不会上传，也无需账号。</string>
+    <string name="screen_welcome_get_started">开始编辑</string>
+    <string name="screen_welcome_open_settings">设置</string>
+
+    <!-- About -->
+    <string name="screen_about_title">关于</string>
+    <string name="screen_about_version">版本 %1$s (%2$d)</string>
+    <string name="screen_about_tagline">手机上的光谱胶片模拟——Film modeling powered by spektrafilm。</string>
+    <string name="screen_about_dedication_heading">献词</string>
+    <string name="screen_about_thanks_heading">致谢</string>
+    <string name="screen_about_thanks_body">Film modeling powered by spektrafilm (Andrea Volpato)。界面灵感来自 Image Toolbox (T8RIN)。色彩计算来自 colour-science。RAW 解码通过 LibRaw。</string>
+    <string name="screen_about_author_heading">作者</string>
+    <string name="screen_about_author_name" translatable="false">Akshay</string>
+    <string name="screen_link_instagram" translatable="false">Instagram</string>
+    <string name="screen_link_youtube" translatable="false">YouTube</string>
+    <string name="screen_about_license_heading">许可证与源代码</string>
+    <string name="screen_about_license_body">应用代码是基于 GPL-3.0-only 发布的自由软件。</string>
+    <string name="screen_about_reuse_heading">使用本代码</string>
+    <string name="screen_about_reuse_body">你可以在 GPL-3.0-only 下复用本代码，包括商业用途——届时你的作品也必须采用 GPLv3，并向用户提供源代码。必须保留并向用户展示以下声明（这是 GPLv3 第 7(b) 条要求的署名）：</string>
+    <string name="screen_about_reuse_notice_app" translatable="false">Spektrafilm for Android by Akshay Sharma — https://github.com/thetechgeekko/Spektrafilm-android</string>
+    <string name="screen_about_reuse_notice_engine" translatable="false">Film modeling powered by spektrafilm (Andrea Volpato) — https://github.com/andreavolpato/spektrafilm</string>
+    <string name="screen_about_reuse_both">两行声明都必须保留。胶片模拟引擎移植自 Andrea Volpato 的 spektrafilm，只署名本移植版会歪曲你所发布作品的来源。</string>
+    <string name="screen_about_libraw_route_status">LibRaw Android 分发路径：仅 LGPL-2.1。</string>
+    <string name="screen_about_libraw_license_status">LibRaw 0.22.2 在上游提供 GNU 宽通用公共许可证第 2.1 版或通用开发与分发许可证第 1.0 版两种选择。Spektrafilm Android 仅按 GNU 宽通用公共许可证第 2.1 版分发。两份上游许可证文本均已内置，以便溯源。</string>
+    <string name="screen_about_libraw_route_note">%1$s 两份原始许可证文本均已内置，可离线查阅。</string>
+    <string name="screen_about_open_source_notices">开源声明</string>
+    <string name="screen_link_releases">发行版</string>
+    <string name="screen_link_gplv3" translatable="false">GPLv3</string>
+    <string name="screen_about_notices_app_heading" translatable="false">Spektrafilm Android</string>
+    <string name="screen_about_notices_app_body">应用源代码基于 GPL-3.0-only 分发。完整的许可证和项目声明可在下方离线查阅。</string>
+    <string name="screen_about_notices_libraw_heading" translatable="false">LibRaw 0.22.2</string>
+    <string name="screen_about_notices_libraw_body">Copyright (C) 2008-2025 LibRaw LLC。本应用的 RAW/DNG 解码静态包含固定版本并在本地修补过的 LibRaw 源码。</string>
+    <string name="screen_link_libraw_source">LibRaw 源代码</string>
+    <string name="screen_link_libraw_archive">0.22.2 归档</string>
+    <string name="screen_link_app_source">应用源代码</string>
+    <string name="screen_link_release_materials">发行材料</string>
+    <string name="screen_about_bundled_docs_heading">内置法律文档</string>
+    <string name="screen_about_doc_app_gpl">应用 GPLv3</string>
+    <string name="screen_about_doc_app_notices">应用声明</string>
+    <string name="screen_about_doc_libraw_copyright">LibRaw 版权</string>
+    <string name="screen_about_doc_libraw_lgpl">LibRaw LGPL 2.1</string>
+    <string name="screen_about_doc_libraw_cddl">LibRaw CDDL 1.0</string>
+    <string name="screen_about_doc_packaging_notices">包装素材声明</string>
+    <string name="screen_about_legal_text_unavailable">无法打开内置的法律文本。请访问 %1$s 查看正式版本。</string>
+
+    <!-- How to use this app -->
+    <string name="screen_howto_title">如何使用光谱胶片</string>
+    <string name="screen_howto_step_number">第 %1$d 步</string>
+    <string name="screen_howto_s1_title">什么是光谱胶片</string>
+    <string name="screen_howto_s1_p1">光谱胶片是一个基于物理建模的光谱胶片模拟器。它不是简单的滤镜或查找表，而是模拟真实的胶片摄影流程：虚拟负片在你的照片光线下曝光，在化学药液中显影，可选地在暗房中放大到相纸上，再扫描回数字文件——整个流程都由真实胶片测得的光谱数据驱动。</string>
+    <string name="screen_howto_s1_p2">其结果是对色彩、颗粒、光晕和染料化学的忠实再现，与真实暗房中得到的画面一致，而不是近似效果。</string>
+    <string name="screen_howto_attribution">Film modeling powered by spektrafilm (Andrea Volpato)。</string>
+    <string name="screen_howto_s2_title">导入照片</string>
+    <string name="screen_howto_s2_step1">轻点打开按钮（编辑器左上角）选择图像。</string>
+    <string name="screen_howto_s2_step2">从相册中选择 JPEG 或 HEIC，可快速获得结果。</string>
+    <string name="screen_howto_s2_step3">要获得最真实的胶片渲染，请打开 RAW 或 DNG 文件。应用会通过 LibRaw 将 RAW 解码为线性的场景参考图像——与真实胶片相同的起点。</string>
+    <string name="screen_howto_s2_step4">如果手边没有照片，轻点“示例图像”载入内置测试图像。</string>
+    <string name="screen_howto_s2_p1">EXIF 方向会被自动读取：竖拍照片和旋转过的 RAW 文件会在预览中自动摆正，无需任何操作。</string>
+    <string name="screen_howto_s3_title">编辑界面布局</string>
+    <string name="screen_howto_s3_p1">编辑器按专业照片编辑应用的方式设计。从上到下依次是：</string>
+    <string name="screen_howto_s3_step1">固定预览——你的照片会以当前设置实时渲染，占据屏幕上部。角落的状态胶囊会显示正在渲染以及上次渲染耗时。轻点照片一次可隐藏所有控件、全屏查看，再次轻点恢复。按住照片可查看未编辑原图，松开返回；双击缩放到 100%，双指捏合可自由缩放，拖动可平移。</string>
+    <string name="screen_howto_s3_step2">直方图——叠加在预览上，便于判断曝光和裁切。左上角的蓝色楔形表示阴影被压成黑色；右上角的红色楔形表示高光溢出。偶尔一两个像素不会触发提示，需要大约千分之一的像素。</string>
+    <string name="screen_howto_s3_step4">滑块——拖动时面板会几乎淡出，让你看到整张照片，数值浮现在右上角。每个数值位于一个胶囊中：轻点可输入精确数字，横向拖动可以比滑轨精细十倍的幅度调整，双击则将该参数恢复默认值。带圆环的胶囊表示该参数已偏离默认值。当整组参数都有改动时，其面板顶部会出现“重置”按钮。</string>
+    <string name="screen_howto_s3_step3">阶段栏——底部有五个阶段：风格、胶片、印相、扫描和完成。它们正是引擎实际模拟的顺序：从风格开始，让负片曝光，印相，扫描相纸，最后对结果调色。</string>
+    <string name="screen_howto_s3_p2">轻点某个阶段会打开它，并在阶段栏上方以可横向滚动的文字标签显示该阶段的参数组。阶段或参数组上的圆点表示其中某项已偏离中性默认值，因此你可以一眼看出管线的哪些部分正在影响照片。各阶段包含的参数组如下：</string>
+    <string name="screen_howto_s3_p3">向下滑动面板，或再次轻点已打开的阶段，即可收起并返回完整预览。</string>
+    <string name="screen_howto_category_line">" — %1$s"</string>
+    <string name="screen_howto_cat_source">来源</string>
+    <string name="screen_howto_cat_source_desc">打开照片、打开 RAW、示例图像、直方图、重置编辑</string>
+    <string name="screen_howto_cat_presets">预设</string>
+    <string name="screen_howto_cat_presets_desc">载入内置或已保存的参数集</string>
+    <string name="screen_howto_cat_simulation">模拟</string>
+    <string name="screen_howto_cat_simulation_desc">胶片、相纸、曝光、自动曝光</string>
+    <string name="screen_howto_cat_input">输入</string>
+    <string name="screen_howto_cat_input_desc">裁切、调整尺寸、放大倍数</string>
+    <string name="screen_howto_cat_raw_wb">RAW 白平衡</string>
+    <string name="screen_howto_cat_raw_wb_desc">色温、色调、白平衡模式（仅 RAW/DNG）</string>
+    <string name="screen_howto_cat_grain">颗粒</string>
+    <string name="screen_howto_cat_grain_desc" formatted="false">颗粒强度、尺寸、子层混合、100% 放大镜</string>
+    <string name="screen_howto_cat_halation">光晕</string>
+    <string name="screen_howto_cat_halation_desc">光晕半径与强度</string>
+    <string name="screen_howto_cat_glare">眩光</string>
+    <string name="screen_howto_cat_glare_desc">镜头眩光（印相路径，默认关闭）</string>
+    <string name="screen_howto_cat_couplers">成色剂</string>
+    <string name="screen_howto_cat_couplers_desc">DIR 染料成色剂扩散</string>
+    <string name="screen_howto_cat_preflash">预闪光</string>
+    <string name="screen_howto_cat_preflash_desc">基础灰雾预闪光强度</string>
+    <string name="screen_howto_cat_experimental">实验性</string>
+    <string name="screen_howto_cat_experimental_desc">开发者选项和高级引擎开关</string>
+    <string name="screen_howto_cat_tone_curve">色调曲线</string>
+    <string name="screen_howto_cat_tone_curve_desc">扫描后应用的主曲线和分通道曲线</string>
+    <string name="screen_howto_cat_masks">蒙版</string>
+    <string name="screen_howto_cat_masks_desc">在画面局部绘制或限定形状的局部调整</string>
+    <string name="screen_howto_cat_display">显示</string>
+    <string name="screen_howto_cat_display_desc">输出色彩空间（sRGB、Adobe RGB、ProPhoto、Rec.2020 等）</string>
+    <string name="screen_howto_s3_step0">顶栏——打开照片、撤销、重做、“保存到相册”主按钮，以及窄屏下收纳设置和关于的溢出菜单。宽屏时设置和关于是直接按钮。</string>
+    <string name="screen_howto_s3_step0b">设置中包含色彩管理、导出默认值和本应用的诊断信息。导出默认值只用于新打开的导出面板；在面板里选择的格式、尺寸、色彩空间和文件名只作用于这一次导出。</string>
+    <string name="screen_howto_s4_title">选择风格</string>
+    <string name="screen_howto_s4_p1">从这里开始，为你的照片找到合适的胶片风格：</string>
+    <string name="screen_howto_s4_step1" formatted="false">打开“胶片”阶段，从胶片选择器中选择胶片——共有 %1$d 个配置，按彩色负片、反转片、电影胶片和印片胶片分组。每个条目会显示该胶片的 ISO、色彩平衡和一句风格说明。</string>
+    <string name="screen_howto_s4_step2">如果你想要印相效果（负片→放大机→相纸），请在“模拟”的“印相”选择器中再选择一种相纸。保持默认值则直接得到负片扫描结果。</string>
+    <string name="screen_howto_s4_step3">调整曝光滑块可让模拟曝光更亮或更暗。也可以轻点“自动”，让应用为你测光。自动曝光以中灰为目标，并在弹出列表中提供 7 种测光模式（中央重点、矩阵、点测光等）。</string>
+    <string name="screen_howto_s4_step4" formatted="false">如果想快速起步，打开“风格”阶段即可直接看到预设列表。共有 %1$d 个内置的、经过研究的胶片到相纸风格。轻点一个就会立即应用完整参数，无需再点“应用”，之后可继续微调。</string>
+    <string name="screen_howto_s5_title">关键工具</string>
+    <string name="screen_howto_s5_p1">编辑器中有几个可直接使用的工具：</string>
+    <string name="screen_howto_s5_step1">旋转 90°——预览底部工具条中的旋转按钮会将照片顺时针旋转 90°。旋转会同时作用于预览、导出和颗粒放大镜。</string>
+    <string name="screen_howto_s5_step2">裁切——同一工具条中的裁切按钮会打开交互式裁切叠加层。拖动角点和边缘手柄可自由裁切，或轻点某个宽高比预设（1:1、4:3、3:2、16:9 等）锁定比例。</string>
+    <string name="screen_howto_s5_step3">原图对比——预览下方工具条中的对比按钮会在原图和模拟结果之间切换一条可拖动的分割线，以判断效果。</string>
+    <string name="screen_howto_s5_step4" formatted="false">100% 颗粒放大镜——同一工具条中的放大镜按钮。显示颗粒纹理的 1:1 裁切，便于在导出全分辨率前检查颗粒尺寸和特征。</string>
+    <string name="screen_howto_s5_step5">配置曲线浏览器——在“模拟”分类中，轻点胶片或相纸名称可打开曲线浏览器。它会显示该胶片的光谱灵敏度、特性（H-D）密度曲线和染料密度光谱。</string>
+    <string name="screen_howto_s6_title">RAW 白平衡</string>
+    <string name="screen_howto_s6_p1">载入 RAW 或 DNG 文件后，RAW 白平衡分类会变为可用。它让你控制 LibRaw 如何解释原始传感器数据：</string>
+    <string name="screen_howto_s6_step1">模式——选择“拍摄时”（使用相机记录的白平衡）、日光或钨丝灯预设。选择“自定义”可输入自己的数值。</string>
+    <string name="screen_howto_s6_step2">色温和色调滑块——仅在自定义模式下可用，用于精确设置白平衡。调整任一滑块都会自动重新解码 RAW 预览。</string>
+    <string name="screen_howto_s6_step3">重置——将白平衡恢复到相机的拍摄时设置。</string>
+    <string name="screen_howto_s6_p2">对于 JPEG 或 HEIC 来源，RAW 白平衡分类会隐藏，因为这些文件中的白平衡已经固化。</string>
+    <string name="screen_howto_s7_title">非破坏性编辑</string>
+    <string name="screen_howto_s7_p1">所有编辑都是非破坏性的。这意味着：</string>
+    <string name="screen_howto_s7_step1">原始文件永远不会被修改。应用只读取它。</string>
+    <string name="screen_howto_s7_step2">每项调整都保存为一份配方（一个小的 JSON 附属文件），并与对应的源图像绑定。</string>
+    <string name="screen_howto_s7_step3">以后再次打开同一图像时，配方会自动载入，模拟会精确恢复到上次离开时的状态。</string>
+    <string name="screen_howto_s7_step4">导出时会以全分辨率重新应用配方，因此小尺寸预览和全分辨率导出文件具有相同观感。</string>
+    <string name="screen_howto_s8_title">导出</string>
+    <string name="screen_howto_s8_p1">对观感满意后，轻点顶栏的“保存到相册”按钮打开导出面板。</string>
+    <string name="screen_howto_s8_p2">导出选项位于本次的导出面板中：</string>
+    <string name="screen_howto_s8_step1">格式——可选 8 位 JPEG、8 位 PNG、16 位 TIFF、16 位 PNG 或 Google Ultra HDR（增益图 JPEG，需设备支持）。16 位 TIFF 和 16 位 PNG 会保留模拟的完整动态范围，并始终以全分辨率导出。</string>
+    <string name="screen_howto_s8_step2">尺寸——原始分辨率、大（4096 px）、中（2048 px）、小（1024 px）或自定义长边。自定义长边可填 256–16384 px；留空表示原始尺寸；非数字或超出范围时会就地标出错误并禁用“保存到相册”。</string>
+    <string name="screen_howto_s8_step3">JPEG 质量——用于 JPEG 和 Ultra HDR 导出的 10–100 滑块。保留 GPS/位置——出于隐私默认关闭。开启后会将源 EXIF 中的 GPS 坐标复制到导出文件。</string>
+    <string name="screen_howto_s8_p3">文件名——可选。中文字符、重音字母和其他 Unicode 字母会保留；路径分隔符、emoji 以及文件名不需要的字符会被移除，面板会预览带后缀的实际文件名。如果没有剩下可用字符，会自动使用带日期的 Spektrafilm 文件名。导出文件保存在设备的 Pictures/Spektrafilm 中。源图像的相机元数据（制造商、型号、镜头、曝光设置）会自动复制到导出文件的 EXIF 中。</string>
+    <string name="screen_howto_s9_title">获得最佳效果的建议</string>
+    <string name="screen_howto_s9_step1">在较暗的房间中判断胶片观感。胶片特征很细微，屏幕上的环境光会削弱你对它的感知。</string>
+    <string name="screen_howto_s9_step2">使用 RAW 输入可获得最准确的结果。JPEG 文件已经过相机的色调曲线、白平衡和锐化处理，会改变模拟对场景的感知。</string>
+    <string name="screen_howto_s9_step3">如果后续还要继续编辑，请导出为 16 位 TIFF 或 16 位 PNG。这样可以保留模拟的完整精度，便于之后调整。</string>
+    <string name="screen_howto_s9_step4">自动曝光以中灰为目标。如果你的主体比中灰更亮或更暗，之后可能需要手动微调曝光滑块。</string>
+    <string name="screen_howto_s9_step5">颗粒是随机（stochastic）的。每次渲染时预览可能略有不同；导出始终是最终的全分辨率版本。</string>
+    <string name="screen_howto_s10_title">致谢</string>
+    <string name="screen_howto_s10_p1">Film modeling powered by spektrafilm (Andrea Volpato)。科学原理、胶片配置和光谱 LUT 都是 Andrea 的工作——光谱胶片是该引擎的原生 Android 移植版，并已通过与原版逐位精确的验证。</string>
+    <string name="screen_howto_s10_p2">界面灵感来自 Image Toolbox (T8RIN)。色彩计算来自 colour-science。RAW 解码通过 LibRaw。基于 GPLv3 的自由软件。</string>
+
+    <!-- Settings -->
+    <string name="screen_settings_appearance">外观</string>
+    <string name="screen_settings_theme">主题</string>
+    <string name="screen_settings_theme_system">跟随系统</string>
+    <string name="screen_settings_theme_light">浅色</string>
+    <string name="screen_settings_theme_dark">深色</string>
+    <string name="screen_settings_language">语言</string>
+    <string name="screen_settings_language_note">立即生效。默认跟随系统语言。</string>
+    <string name="screen_settings_language_system">跟随系统</string>
+    <string name="screen_settings_language_zh_cn">简体中文</string>
+    <string name="screen_settings_language_en">English</string>
+    <string name="screen_settings_dynamic_color">Material You 取色</string>
+    <string name="screen_settings_dynamic_color_note">默认关闭（仅 Android 12 及以上可用）。开启：从壁纸提取配色。关闭：使用内置暖灰暗房配色。</string>
+    <string name="screen_settings_render_defaults">渲染默认值</string>
+    <string name="screen_settings_render_defaults_note">下次启动或打开新照片时生效。单张图像的编辑和预设仍会覆盖这些值。</string>
+    <string name="screen_settings_default_output_cs">默认输出色彩空间</string>
+    <string name="screen_settings_preview_max_size">预览最大尺寸</string>
+    <string name="screen_settings_preview_max_size_tip">交互预览的长边像素数。</string>
+    <string name="screen_settings_draft_size">草稿渲染尺寸</string>
+    <string name="screen_settings_draft_size_tip">拖动滑块时绘制的快速预览长边像素数，随后会替换为清晰渲染。数值越低，跟手越紧；数值越高，越接近最终结果。</string>
+    <string name="screen_settings_default_film">默认胶片配置</string>
+    <string name="screen_settings_default_print">默认相纸配置</string>
+    <string name="screen_settings_export">导出</string>
+    <string name="screen_settings_export_note">返回编辑器后生效；当前已打开的导出面板不会改变。</string>
+    <string name="screen_settings_export_format">导出格式</string>
+    <string name="screen_settings_jpeg_quality">JPEG 质量</string>
+    <string name="screen_settings_keep_gps">保留位置信息 (GPS)</string>
+    <string name="screen_settings_keep_gps_note">关闭：从导出中移除 GPS（推荐）。其他 EXIF（相机、曝光、日期）始终保留。</string>
+    <string name="screen_settings_experimental">实验性</string>
+    <string name="screen_settings_gpu_preview">GPU 预览（实验性）</string>
+    <string name="screen_settings_gpu_preview_note">在 GPU 上即时渲染适配预览（当前观感的 3D LUT），而不是每次编辑都进行约 1 秒的 CPU 渲染。此开关不影响导出。默认关闭：当前表面在面板动画时可能卡顿或覆盖控件——正在重做。</string>
+    <string name="screen_settings_gpu_engine">GPU 引擎（Vulkan，实验性）</string>
+    <string name="screen_settings_gpu_engine_note">在 GPU 上运行胶片模拟的扫描阶段以生成交互预览——比预览 LUT 更准确，首次使用时会在此设备上与 CPU 引擎比对，并自动回退到 CPU。此开关不影响导出。下次返回编辑器时生效。</string>
+    <string name="screen_settings_gpu_export">GPU 导出（Vulkan，实验性）</string>
+    <string name="screen_settings_gpu_export_note">以全分辨率在 GPU 上运行更多导出步骤。色彩阶段会在此设备上与 CPU 引擎比对，一旦出现偏差会自动回退到 CPU。颗粒和观看眩光不同：它们使用更快的随机生成器重新绘制，因此噪点图案不会与默认引擎一致——颗粒的强度和特征相同，但斑点不同。在此设备上重复导出结果保持一致。若要与默认引擎完全一致，请保持关闭。默认关闭，且与预览开关相互独立。</string>
+    <string name="screen_settings_diagnostics_heading">诊断</string>
+    <string name="screen_settings_diagnostics_logs">诊断与日志</string>
+    <string name="screen_settings_help_heading">帮助与反馈</string>
+    <string name="screen_settings_view_issues">查看问题</string>
+    <string name="screen_settings_source">源代码</string>
+    <string name="screen_settings_show_onboarding">再次显示新手引导</string>
+
+    <!-- Diagnostics -->
+    <string name="screen_diag_app_version">应用：%1$s</string>
+    <string name="screen_diag_privacy_note">不会自动上传任何内容。报告会包含应用/设备版本，对路径、URI 和图像元数据做脱敏处理，并最多保留最近一次崩溃 7 天。复制或分享始终需要你明确操作。</string>
+    <string name="screen_diag_last_crash">上次崩溃</string>
+    <string name="screen_diag_no_crash">没有记录到崩溃。</string>
+    <string name="screen_diag_copy">复制</string>
+    <string name="screen_diag_copy_crash_desc">将上次崩溃记录复制到剪贴板</string>
+    <string name="screen_diag_clear">清除</string>
+    <string name="screen_diag_clear_crash_desc">清除上次崩溃记录</string>
+    <string name="screen_diag_cache_heading">拍摄 tc_lut 缓存</string>
+    <string name="screen_diag_cache_note">固定默认项和按参数索引的 LRU。cache_held_bytes 不包含仍被活动渲染租用、已淘汰的 LUT；这些 LUT 在释放前仍计入进程内存预算。</string>
+    <string name="screen_diag_cache_loading">正在加载缓存诊断…</string>
+    <string name="screen_diag_refresh_cache">刷新缓存统计</string>
+    <string name="screen_diag_logcat_heading">Logcat 快照</string>
+    <string name="screen_diag_capture_logcat">捕获 logcat</string>
+    <string name="screen_diag_recapture_logcat">重新捕获 logcat</string>
+    <string name="screen_diag_share_report">分享诊断报告</string>
+    <string name="screen_diag_share_report_subject">Spektrafilm 诊断报告</string>
+    <string name="screen_diag_startup_title">上次运行发生错误</string>
+    <string name="screen_diag_startup_note">上次运行发生错误。请复制或截图此页，或分享诊断报告。不会自动上传。</string>
+    <string name="screen_diag_startup_continue">继续打开应用</string>
+
+    <string name="screen_diag_report_app">应用：%1$s</string>
+    <string name="screen_diag_report_device">设备：%1$s；Android %2$s (API %3$d)</string>
+    <string name="screen_diag_report_last_crash">--- 上次崩溃 ---</string>
+    <string name="screen_diag_report_cache">--- 拍摄 tc_lut 缓存 ---</string>
+    <string name="screen_diag_report_memory">--- 内存 ---</string>
+    <string name="screen_diag_report_logcat">--- logcat（近期） ---</string>
+    <string name="screen_diag_unknown">未知</string>
+    <string name="screen_diag_unavailable">不可用</string>
+    <string name="screen_diag_memory_native_heap">原生堆已分配：%1$s</string>
+    <string name="screen_diag_memory_engine_budget">引擎预算：%1$s</string>
+
+    <!-- Profile curve browser -->
+    <string name="screen_curves_title">曲线 · %1$s</string>
+    <string name="screen_curves_type_negative">彩色负片</string>
+    <string name="screen_curves_type_positive">彩色正片</string>
+    <string name="screen_curves_loading">正在加载配置曲线</string>
+    <string name="screen_curves_error">加载配置出错：%1$s</string>
+    <string name="screen_curves_not_found">未找到“%1$s”的配置数据</string>
+    <string name="screen_curves_chart_desc">%2$s 的%1$s图表：%3$s。系列：%4$s。</string>
+    <string name="screen_curves_sensitivity_title">光谱灵敏度</string>
+    <string name="screen_curves_sensitivity_subtitle">对数灵敏度 vs 波长 (nm)</string>
+    <string name="screen_curves_sensitivity_missing">此配置没有可用的光谱灵敏度数据。</string>
+    <string name="screen_curves_hd_title">特性 (H-D) 曲线</string>
+    <string name="screen_curves_hd_subtitle">密度 vs 对数曝光</string>
+    <string name="screen_curves_hd_missing">此配置没有可用的密度曲线数据。</string>
+    <string name="screen_curves_dye_title">染料密度光谱</string>
+    <string name="screen_curves_dye_subtitle">染料密度 vs 波长 (nm)</string>
+    <string name="screen_curves_dye_missing">此配置没有可用的染料密度光谱。</string>
+    <string name="screen_curves_legend_r_layer">R 层</string>
+    <string name="screen_curves_legend_g_layer">G 层</string>
+    <string name="screen_curves_legend_b_layer">B 层</string>
+    <string name="screen_curves_legend_r">R</string>
+    <string name="screen_curves_legend_g">G</string>
+    <string name="screen_curves_legend_b">B</string>
+    <string name="screen_curves_legend_c_dye">C 染料（R 层）</string>
+    <string name="screen_curves_legend_m_dye">M 染料（G 层）</string>
+    <string name="screen_curves_legend_y_dye">Y 染料（B 层）</string>
+    <string name="screen_curves_axis_wavelength">波长 (nm)</string>
+    <string name="screen_curves_axis_log_s">log S</string>
+    <string name="screen_curves_axis_log_e">log E</string>
+    <string name="screen_curves_axis_density">密度</string>
+</resources>

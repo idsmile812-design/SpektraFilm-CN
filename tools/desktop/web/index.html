@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>光谱胶片 · Mac 本地暗房</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#photo-stage">跳到照片</a>
+
+  <header class="topbar">
+    <div class="brand" aria-label="光谱胶片 Spektrafilm">
+      <span class="brand-cn">光谱胶片</span>
+      <span class="brand-en">SPEKTRAFILM</span>
+    </div>
+    <p class="local-badge">
+      <span class="local-dot" aria-hidden="true"></span>
+      此 Mac 本地处理
+    </p>
+    <div class="topbar-actions">
+      <button id="open-button" class="button" type="button">打开照片</button>
+      <button id="export-button" class="button button-accent" type="button" disabled>导出照片</button>
+      <input id="file-input" class="visually-hidden" type="file" accept="image/jpeg,image/png">
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="catalog-panel" aria-labelledby="catalog-title">
+      <div class="panel-heading catalog-heading">
+        <div>
+          <h1 id="catalog-title">风格目录</h1>
+          <p id="catalog-count" class="panel-subtitle">真实内置胶片与相纸</p>
+        </div>
+        <button id="catalog-retry" class="button button-small" type="button" hidden>重试</button>
+      </div>
+      <p id="catalog-status" class="panel-status" role="status" aria-live="polite">正在读取真实目录…</p>
+      <nav id="catalog-nav" class="catalog-nav" aria-label="内置风格目录"></nav>
+      <footer class="catalog-footer">
+        <p class="attribution">Film modeling powered by spektrafilm</p>
+        <p class="catalog-note">型号名称保留官方原文，分组与说明为简体中文。</p>
+      </footer>
+    </aside>
+
+    <section class="photo-panel" aria-labelledby="photo-title">
+      <h2 id="photo-title" class="visually-hidden">照片预览与分割线</h2>
+      <div class="stage-toolbar">
+        <p id="image-meta" class="image-meta">未打开照片</p>
+        <button id="refresh-button" class="button button-small" type="button" disabled>重新渲染</button>
+      </div>
+
+      <div id="photo-stage" class="stage" tabindex="-1">
+        <div id="empty-state" class="empty-state">
+          <p class="empty-kicker">本地暗房</p>
+          <p class="empty-title">打开一张 JPEG 或 PNG</p>
+          <p class="empty-copy">仅支持 JPEG 和 PNG。照片只在这台 Mac 的临时会话里解码与渲染，不上传、不联网。</p>
+          <button id="empty-open" class="button button-accent" type="button">选择照片…</button>
+          <p class="empty-hint">也可以把照片拖到这里</p>
+          <p id="empty-error" class="empty-error" role="alert" hidden></p>
+        </div>
+
+        <div id="photo-frame" class="photo-frame" hidden>
+          <img id="original-image" class="photo-layer" alt="原图预览" draggable="false">
+          <input id="compare-range" class="compare-range" type="range" min="0" max="100" step="1" value="50" aria-label="原图与效果分割线">
+          <div id="divider" class="divider" aria-hidden="true">
+            <span class="divider-handle"><span class="divider-grip"></span></span>
+          </div>
+          <img id="effect-image" class="photo-layer effect-layer" alt="效果预览" draggable="false">
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <p id="render-status" class="status-line" role="status" aria-live="polite">尚未打开照片。</p>
+        <div class="compare-actions">
+          <label class="split-label" for="compare-range">分割线 <output id="split-output" for="compare-range">50%</output></label>
+          <button id="hold-original" class="button button-ghost" type="button" disabled>按住看原图</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="recipe-panel" aria-labelledby="recipe-title">
+      <div class="panel-heading">
+        <div>
+          <h2 id="recipe-title">当前配方</h2>
+          <p id="current-style" class="current-style">尚未选择风格</p>
+          <p id="current-spec" class="current-spec">—</p>
+        </div>
+      </div>
+
+      <p id="recipe-hint" class="recipe-hint">打开照片后按当前配方渲染。未手动调整时，曝光按风格作者值 × 强度计算。</p>
+
+      <form id="recipe-form" class="recipe-form" autocomplete="off">
+        <div class="control">
+          <div class="control-head">
+            <label for="strength">风格强度</label>
+            <output id="strength-output" for="strength">100%</output>
+          </div>
+          <input id="strength" type="range" min="0" max="100" step="1" value="100">
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="exposure">曝光 EV</label>
+            <output id="exposure-output" for="exposure">0.00</output>
+          </div>
+          <input id="exposure" type="range" min="-3" max="3" step="0.01" value="0">
+          <div class="control-note">
+            <span id="exposure-note">跟随风格</span>
+            <button id="exposure-reset" class="text-button" type="button" disabled>恢复预设曝光</button>
+          </div>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="grain">颗粒面积倍率</label>
+            <output id="grain-output" for="grain">100%</output>
+          </div>
+          <input id="grain" type="range" min="0" max="200" step="1" value="100">
+          <p class="field-hint">物理颗粒面积倍率；0% 为关闭颗粒。</p>
+        </div>
+
+        <div class="control">
+          <div class="control-head">
+            <label for="halation">光晕量倍率</label>
+            <output id="halation-output" for="halation">100%</output>
+          </div>
+          <input id="halation" type="range" min="0" max="200" step="1" value="100">
+          <p class="field-hint">同时缩放乳剂内散射与片基背面光晕。</p>
+        </div>
+
+        <fieldset class="profiles">
+          <legend>胶片与相纸</legend>
+          <div class="select-row">
+            <label for="film-select">胶片</label>
+            <select id="film-select"></select>
+          </div>
+          <div class="select-row">
+            <label for="print-select">相纸 / 打印</label>
+            <select id="print-select"></select>
+          </div>
+          <div class="control-note">
+            <span>默认跟随当前风格</span>
+            <button id="profile-reset" class="text-button" type="button" disabled>恢复跟随风格</button>
+          </div>
+          <p id="profile-note" class="field-hint">手动选择胶片或相纸后作为配方覆写发送。</p>
+        </fieldset>
+
+        <div class="recipe-actions">
+          <button id="reset-button" class="button" type="button">重置为中性配方</button>
+        </div>
+      </form>
+    </aside>
+  </main>
+
+  <dialog id="export-dialog" class="export-dialog" aria-labelledby="export-title">
+    <form id="export-form" class="export-form" novalidate>
+      <div class="dialog-head">
+        <div>
+          <h2 id="export-title">导出照片</h2>
+          <p class="dialog-subtitle">使用当前已渲染的完整配方与真实引擎输出。</p>
+        </div>
+        <button id="export-close" class="button button-small" type="button" aria-label="关闭导出对话框">关闭</button>
+      </div>
+
+      <fieldset class="format-group">
+        <legend>格式</legend>
+        <label class="radio-row">
+          <input type="radio" name="format" value="jpeg" checked>
+          <span>JPEG</span>
+          <span class="radio-note">有损，可调质量</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="format" value="png">
+          <span>PNG</span>
+          <span class="radio-note">无损</span>
+        </label>
+      </fieldset>
+
+      <div id="quality-row" class="field">
+        <label for="quality">JPEG 质量</label>
+        <input id="quality" type="number" min="1" max="100" step="1" value="95" inputmode="numeric">
+        <p class="field-hint">1–100，默认 95。</p>
+      </div>
+
+      <div class="field">
+        <label for="filename">文件名</label>
+        <input id="filename" type="text" maxlength="160" spellcheck="false" autocomplete="off">
+        <p id="filename-preview" class="field-hint">导出为照片.jpg</p>
+        <p class="field-hint">仅保留字母、数字、空格、_ 和 -；扩展名按格式自动添加。留空则自动命名为 Spektrafilm_日期_时间。</p>
+      </div>
+
+      <p id="export-status" class="export-status" role="status" aria-live="polite">导出会写入你在这台 Mac 上选择的下载位置。</p>
+
+      <div class="dialog-actions">
+        <button id="export-cancel" class="button" type="button">取消</button>
+        <button id="export-submit" class="button button-accent" type="submit">导出</button>
+      </div>
+    </form>
+  </dialog>
+
+  <noscript>
+    <p class="noscript-note">需要启用 JavaScript 才能使用本地暗房界面。API 仍只监听 127.0.0.1。</p>
+  </noscript>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

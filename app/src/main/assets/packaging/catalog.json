@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "items": [
+    {
+      "stockId": "kodak_portra_160",
+      "asset": "packaging/kodak_portra_160_2011.jpg",
+      "mediaType": "box",
+      "year": 2011,
+      "author": "SkywalkerPL",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Kodak_Portra_160.jpg",
+      "sourceFile": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Kodak_Portra_160.jpg",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "modification": "Preview resized; no crop. Interface display does not imply endorsement."
+    },
+    {
+      "stockId": "kodak_portra_800",
+      "asset": "packaging/kodak_portra_800_2009.jpg",
+      "mediaType": "box",
+      "year": 2009,
+      "author": "Eastwind41",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:KODAK_PORTRA800_Pkg.JPG",
+      "sourceFile": "https://upload.wikimedia.org/wikipedia/commons/4/4c/KODAK_PORTRA800_Pkg.JPG",
+      "license": "Copyrighted free use",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/Template:Copyrighted_free_use",
+      "modification": "Preview resized; no crop. Original author permits unrestricted redistribution, commercial use and modification."
+    },
+    {
+      "stockId": "kodak_portra_400",
+      "asset": "packaging/kodak_portra_400_2018.jpg",
+      "mediaType": "cartridge",
+      "year": 2018,
+      "author": "Markus Spiske",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Kodak_analog_film_reel_Portra_400_(27940330389).jpg",
+      "sourceFile": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Kodak_analog_film_reel_Portra_400_%2827940330389%29.jpg",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "modification": "Preview resized; no crop. The image shows a film cartridge, not a box."
+    }
+  ]
+}

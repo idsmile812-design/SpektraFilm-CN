@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spektrafilm for Android. GPLv3. -->
+<resources>
+    <string name="app_name">Spektrafilm</string>
+    <string name="screen_about_product_name" translatable="false">Spektrafilm</string>
+    <string name="screen_about_android_name" translatable="false">Spektrafilm for Android</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spektrafilm for Android. GPLv3. -->
+<!-- translatable="false" entries are copied verbatim so this file's key inventory stays
+     one-to-one with values/ and the resource-consistency test can prove it. They are never
+     translated: brand names, official model names, links and legal attribution stay as-is. -->
+<!-- Shared editor widgets (Widgets.kt): labels, dialog text and accessibility descriptions. -->
+<resources>
+    <!-- SectionCard header -->
+    <string name="widget_state_expanded">已展开</string>
+    <string name="widget_state_collapsed">已收起</string>
+    <string name="widget_section_expand">展开</string>
+    <string name="widget_section_collapse">收起</string>
+    <string name="widget_section_enable_switch">启用 %1$s</string>
+
+    <!-- HelpBadge ("?" affordance on a section header) -->
+    <string name="widget_help_badge_tooltip">“%1$s”有什么作用？</string>
+    <string name="widget_help_badge_description">关于 %1$s</string>
+    <string name="widget_help_badge_action">显示帮助</string>
+
+    <!-- AdvancedToggle -->
+    <string name="widget_advanced_hide">隐藏高级选项</string>
+    <string name="widget_advanced_show">显示高级选项</string>
+
+    <!-- EnhancedSlider value pill (tap = type a value, double-tap = reset) -->
+    <string name="widget_value_pill_description">%1$s 数值 %2$s</string>
+    <string name="widget_value_pill_description_modified">%1$s 数值 %2$s，已修改</string>
+    <string name="widget_value_pill_enter_exact">为 %1$s 输入精确数值</string>
+    <string name="widget_value_pill_reset_default">将 %1$s 重置为默认值</string>
+
+    <!-- TripleSlider / PairSlider default component labels -->
+    <string name="widget_component_r">R</string>
+    <string name="widget_component_g">G</string>
+    <string name="widget_component_b">B</string>
+    <string name="widget_component_1">1</string>
+    <string name="widget_component_2">2</string>
+
+    <!-- NotYetActiveNote / GatedBlock -->
+    <string name="widget_not_yet_active_badge">尚未生效</string>
+    <string name="widget_not_yet_active_detail">这些控件已为未来的引擎更新接好，但目前尚无效果。</string>
+
+    <!-- NumericEntryDialog -->
+    <string name="widget_numeric_entry_field_label">数值</string>
+    <string name="widget_numeric_entry_sign_toggle">切换正负号</string>
+    <string name="widget_numeric_entry_range_hint">请输入 %1$s 到 %2$s 之间的数值。</string>
+    <string name="widget_numeric_entry_set">设置</string>
+    <string name="widget_numeric_entry_cancel">取消</string>
+
+    <!-- AutoExposureControl / metering-method popup -->
+    <string name="widget_ae_drag_handle">拖动手柄</string>
+    <string name="widget_ae_dismiss_menu">关闭测光菜单</string>
+    <string name="widget_ae_metering_method">测光模式</string>
+    <string name="widget_ae_off_manual">关闭 / 手动</string>
+    <string name="widget_ae_description">自动曝光</string>
+    <string name="widget_ae_state_on">开启，%1$s</string>
+    <string name="widget_ae_state_off">关闭，手动曝光</string>
+    <string name="widget_ae_choose_method">选择测光模式</string>
+    <string name="widget_ae_turn_on">开启并选择测光模式</string>
+    <string name="widget_ae_tooltip">自动曝光：轻点选择测光模式，或向上滑动展开。关闭时曝光完全手动。</string>
+    <!-- Quoted so aapt keeps the double spaces around the middle dot. -->
+    <string name="widget_ae_button_on">"自动  ·  %1$s"</string>
+    <string name="widget_ae_button_off">自动</string>
+    <string name="widget_ae_manual_exposure">手动曝光</string>
+    <string name="widget_ae_method_center_weighted">中央重点</string>
+    <string name="widget_ae_method_matrix">矩阵</string>
+    <string name="widget_ae_method_multi_zone">多区域</string>
+    <string name="widget_ae_method_partial">局部</string>
+    <string name="widget_ae_method_highlight_weighted">高光重点</string>
+    <string name="widget_ae_method_median">中位数</string>
+    <string name="widget_ae_method_average">平均</string>
+</resources>

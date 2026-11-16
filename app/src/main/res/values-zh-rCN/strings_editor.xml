@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spektrafilm for Android. GPLv3. -->
+<!-- translatable="false" entries are copied verbatim so this file's key inventory stays
+     one-to-one with values/ and the resource-consistency test can prove it. They are never
+     translated: brand names, official model names, links and legal attribution stay as-is. -->
+<resources>
+
+    <!-- Adjustment categories (bottom bar / panel titles) -->
+    <!-- Film / paper stock browser. -->
+    <string name="stock_browser_change">更换</string>
+    <string name="stock_browser_selected">已选择</string>
+    <!-- The five darkroom stages that form the editor's top level. -->
+    <string name="editor_stage_look">风格</string>
+    <string name="editor_stage_look_hint">从胶片、相纸和预设开始</string>
+    <string name="editor_stage_film">胶片</string>
+    <string name="editor_stage_film_hint">负片：曝光、白平衡、颗粒、光晕</string>
+    <string name="editor_stage_print">印相</string>
+    <string name="editor_stage_print_hint">放大机与相纸</string>
+    <string name="editor_stage_scan">扫描</string>
+    <string name="editor_stage_scan_hint">将相纸结果转换为数字文件</string>
+    <string name="editor_stage_finish">完成</string>
+    <string name="editor_stage_finish_hint">扫描后的调色、蒙版和显示</string>
+    <!-- Announced for a category chip whose parameters differ from the neutral defaults;
+         the on-screen marker is a colour dot, which TalkBack cannot see. -->
+    <string name="editor_category_modified">已修改</string>
+    <string name="editor_category_source">来源</string>
+    <string name="editor_category_presets">预设</string>
+    <string name="editor_category_simulation">模拟</string>
+    <string name="editor_category_input">输入</string>
+    <string name="editor_category_raw_wb">白平衡</string>
+    <string name="editor_category_grain">颗粒</string>
+    <string name="editor_category_halation">光晕</string>
+    <string name="editor_category_glare">眩光</string>
+    <string name="editor_category_couplers">成色剂</string>
+    <string name="editor_category_preflash">预闪光</string>
+    <string name="editor_category_experimental">实验性</string>
+    <string name="editor_category_tone_curve">色调曲线</string>
+    <string name="editor_category_masks">蒙版</string>
+    <string name="editor_category_display">显示</string>
+
+    <!-- App root, navigation and editor-session restore notices -->
+    <string name="editor_loading">正在加载编辑器</string>
+    <string name="editor_session_source_changed">持久保存的来源已改变；将恢复其保存的配方</string>
+    <string name="editor_session_access_expired">来源访问权限已过期；请选择同一文件以继续编辑</string>
+    <string name="editor_session_quarantined">损坏的编辑会话已被隔离；将恢复来源和保存的配方</string>
+    <string name="editor_session_newer_version">编辑会话来自更新版本的应用，已保持原样</string>
+    <string name="editor_session_unavailable">编辑会话不可用；将恢复来源和保存的配方</string>
+    <string name="editor_session_recovered">编辑会话存储已恢复；新的编辑现在可以保存</string>
+
+    <!-- Top bar actions (fixed keys resolved by instrumentation) and sub-screen navigation -->
+    <string name="editor_action_export">保存到相册</string>
+    <string name="editor_action_undo">撤销</string>
+    <string name="editor_action_redo">重做</string>
+    <string name="editor_action_settings">设置</string>
+    <string name="editor_action_about">关于</string>
+    <string name="editor_action_more">更多操作</string>
+    <string name="editor_nav_diagnostics">诊断</string>
+    <string name="editor_nav_back">返回</string>
+
+    <!-- In-app camera and capture confirmation -->
+    <string name="camera_action_take">拍摄照片</string>
+    <string name="camera_action_capture">拍照</string>
+    <string name="camera_action_retake">重拍</string>
+    <string name="camera_action_use">使用这张照片</string>
+    <string name="camera_action_flip">切换前后相机</string>
+    <string name="camera_action_allow">允许使用相机</string>
+    <string name="camera_action_settings">打开系统设置</string>
+    <string name="camera_title">拍摄照片</string>
+    <string name="camera_permission_title">不离开编辑器，直接拍摄照片</string>
+    <string name="camera_permission_body">相机权限仅用于实时取景和你主动拍摄的照片。不使用视频、麦克风或网络。</string>
+    <string name="camera_permission_denied">尚未获得相机权限。你可以在系统设置中开启，或改为从相册选择照片。</string>
+    <string name="camera_unavailable">这台设备没有可用的相机。你仍然可以打开已有照片。</string>
+    <string name="camera_starting">正在启动相机…</string>
+    <string name="camera_capturing">正在拍照…</string>
+    <string name="camera_failed">相机无法启动。请关闭此页后重试，或选择已有照片。</string>
+    <string name="camera_capture_failed">拍照失败：%1$s</string>
+    <string name="camera_preview_desc">相机实时取景画面</string>
+    <string name="camera_capture_name">拍摄照片</string>
+    <string name="camera_capture_unavailable">拍摄的临时照片已被系统清理。请重新拍摄后继续。</string>
+
+    <!-- Editor status line (SourcePanel live text) -->
+    <string name="editor_status_initializing">正在初始化…</string>
+    <string name="editor_status_resuming_export">正在恢复导出…</string>
+    <string name="editor_status_prev_export_saved">上次导出已保存至 Pictures/Spektrafilm</string>
+    <string name="editor_status_prev_export_failed">上次导出失败</string>
+    <string name="editor_status_prev_export_cancelled">上次导出已取消</string>
+    <string name="editor_status_prev_export_reconciling">上次导出中断 · 正在核对存储状态</string>
+    <string name="editor_status_rendering_full">正在以全分辨率渲染…</string>
+    <string name="editor_status_saved_to_gallery">已保存至 Pictures/Spektrafilm</string>
+    <string name="editor_status_export_complete_retrying_save">导出完成 · 正在重试保存编辑会话</string>
+    <string name="editor_status_export_complete_save_waiting">导出完成 · 编辑会话正在等待保存</string>
+    <string name="editor_status_export_stale_source">导出完成，但对应的是之前或未获授权的来源</string>
+    <string name="editor_status_export_pending_reconciliation">导出结果待核对 · 请重启后再试</string>
+    <string name="editor_toast_export_reconciling">正在核对导出结果。请重启后再试。</string>
+    <string name="editor_status_export_failed">导出失败：%1$s</string>
+    <string name="editor_toast_export_failed">导出失败：%1$s</string>
+    <string name="editor_error_export_visual_mismatch">导出文件与渲染画面不一致，未写入相册。请重新导出。</string>
+    <string name="editor_status_export_cancelled">导出已取消</string>
+    <string name="editor_status_undo">撤销</string>
+    <string name="editor_status_redo">重做</string>
+    <string name="editor_status_session_migrated">已恢复的会话已迁移到可用配置</string>
+    <string name="editor_status_ready_profiles">就绪 · %1$d 个配置</string>
+    <string name="editor_status_session_restored_profiles">编辑会话已恢复 · %1$d 个配置</string>
+
+    <!-- Saved-recipe restore notices -->
+    <string name="editor_snack_recipe_restored">已恢复此图像保存的编辑</string>
+    <string name="editor_snack_recipe_quarantined">损坏的已保存编辑已被隔离；已恢复默认值</string>
+    <string name="editor_status_recipe_newer_version">保存的编辑使用了更新的配方版本 %1$s</string>
+    <string name="editor_snack_recipe_newer_version">保存的编辑来自更新版本的应用；已保持原样</string>
+    <string name="editor_status_recipe_unavailable">保存的编辑不可用；写入已暂停</string>
+    <string name="editor_snack_recipe_unavailable">无法安全打开保存的编辑；请明确重置后才能继续保存</string>
+    <string name="editor_snack_dng_fallback">DNG 已通过系统解码器导入（显示参考）</string>
+
+    <!-- Source selection -->
+    <string name="editor_error_raw_out_of_memory">内存不足，无法解码此 RAW 文件（文件对此设备来说过大）。</string>
+    <string name="editor_status_storage_permission_required">此 Android 版本需要存储权限才能导出</string>
+    <string name="editor_toast_storage_permission">请允许照片和媒体访问权限以保存导出。</string>
+    <string name="editor_source_demo_name">内置示例图像</string>
+    <string name="editor_status_demo_image">示例图像</string>
+    <string name="editor_status_selection_failed_restored">选择失败 · 已恢复上一个来源</string>
+    <string name="editor_status_selection_failed_auth">选择失败 · 上一个来源需要重新授权</string>
+    <string name="editor_status_source_unavailable_demo">来源不可用 · 正在使用示例图像</string>
+    <string name="editor_status_source_state_unavailable">来源状态不可用 · 请重新选择文件</string>
+    <string name="editor_status_access_temporary">%1$s · 访问权限是临时的</string>
+    <string name="editor_snack_source_open_failed">无法打开该来源。已恢复之前的来源状态。</string>
+    <string name="editor_source_picked_photo_name">已选照片</string>
+    <string name="editor_status_photo_selected">已选择照片</string>
+    <string name="editor_status_mcraw_unsupported">暂不支持 MotionCam .mcraw 片段（RAW 视频导入正在开发中）</string>
+    <string name="editor_snack_mcraw_coming">MotionCam .mcraw 导入即将推出——目前支持单张 RAW/DNG</string>
+    <string name="editor_status_video_unsupported">暂不支持视频片段（动态模拟正在开发中）</string>
+    <string name="editor_snack_video_coming">视频模拟即将推出——目前支持静态图像（RAW/DNG 和普通照片）</string>
+    <string name="editor_source_raw_name">RAW：%1$s</string>
+    <string name="editor_status_raw_selected">已选择 RAW</string>
+    <string name="editor_status_shared_image_unsupported">无法打开共享的图像（不支持的来源）</string>
+    <string name="editor_snack_source_expired">来源访问权限已过期，或文件已被移动</string>
+    <string name="editor_snack_choose_again">重新选择</string>
+
+    <!-- Preset import / export / LUT status -->
+    <string name="editor_status_preset_import_failed">导入失败</string>
+    <string name="editor_status_preset_imported">预设已导入</string>
+    <string name="editor_status_preset_import_failed_reason">导入失败：%1$s</string>
+    <string name="editor_status_preset_export_failed">导出失败</string>
+    <string name="editor_status_preset_exported">预设已导出</string>
+    <string name="editor_status_preset_export_failed_reason">导出失败：%1$s</string>
+    <string name="editor_status_lut_saved">LUT 已保存</string>
+    <string name="editor_status_lut_save_failed">LUT 保存失败：%1$s</string>
+    <string name="editor_status_applied_builtin">已应用内置“%1$s”</string>
+    <string name="editor_status_preset_saved">已保存预设“%1$s”</string>
+    <string name="editor_status_preset_apply_failed">应用失败</string>
+    <string name="editor_status_preset_applied">已应用“%1$s”</string>
+    <string name="editor_status_preset_apply_failed_reason">应用失败：%1$s</string>
+    <string name="editor_status_preset_deleted">已删除“%1$s”</string>
+    <!-- Deleting a saved preset was one tap and permanent. It now offers Undo. -->
+    <string name="editor_snack_preset_deleted">已删除预设“%1$s”</string>
+    <string name="editor_status_preset_restored">已恢复“%1$s”</string>
+    <string name="editor_status_settings_copied">设置已复制</string>
+    <string name="editor_status_copy_failed">复制失败</string>
+    <string name="editor_status_settings_pasted">设置已粘贴</string>
+    <string name="editor_status_paste_failed">粘贴失败：%1$s</string>
+    <string name="editor_status_baking_lut">正在烘焙 %1$s LUT…</string>
+    <string name="editor_status_save_dialog_failed">无法打开保存对话框：%1$s</string>
+    <string name="editor_status_lut_bake_failed">LUT 烘焙失败：%1$s</string>
+
+    <!-- Preview render status, magnifier, stock-switch suggestions -->
+    <string name="editor_magnifier_edit_changed">编辑已改变 · 请再次轻点预览</string>
+    <string name="editor_magnifier_rendering" formatted="false">正在渲染 100% 裁切…</string>
+    <string name="editor_magnifier_done">%1$d×%2$dpx · 1:1 全分辨率渲染</string>
+    <string name="editor_magnifier_failed">裁切渲染失败：%1$s</string>
+    <string name="editor_status_rendering_preview">正在渲染预览…</string>
+    <!-- A render that was cancelled rather than finished. Without this the editor kept
+         claiming it was rendering while every engine thread sat idle. -->
+    <string name="editor_status_preview_interrupted">预览已中断——更改任一设置以重试</string>
+    <string name="editor_status_preview_ready">预览已就绪</string>
+    <string name="editor_render_error_auth_required">需要来源授权</string>
+    <string name="editor_status_source_expired">来源访问权限已过期或文件已移动 · 请重新选择</string>
+    <string name="editor_status_preview_error">预览错误：%1$s</string>
+    <string name="editor_status_recipe_clear_failed">无法清除保存的配方</string>
+    <string name="editor_snack_back_again">再按一次返回键退出</string>
+    <string name="editor_snack_slide_film">%1$s 是反转片——要按正像查看吗？</string>
+    <string name="editor_snack_slide_mode">反转片模式</string>
+    <string name="editor_snack_switched_to">已切换到 %1$s</string>
+    <string name="editor_snack_use_defaults">使用其默认值</string>
+
+    <!-- Demo source, reset edits, white-balance eyedropper, share -->
+    <string name="editor_snack_demo_failed">无法选择示例；已恢复之前的来源。</string>
+    <string name="editor_snack_recipe_clear_failed">无法清除保存的配方；编辑未重置</string>
+    <string name="editor_status_edits_reset">编辑已重置 · 配方已清除</string>
+    <string name="editor_snack_edits_reset">编辑已重置；保存的配方已清除</string>
+    <string name="editor_sample_title_wb">轻点中性色（灰/白）</string>
+    <string name="editor_sample_title_tone">轻点选取色调</string>
+    <string name="editor_sample_title_color">轻点选取颜色</string>
+    <string name="editor_sample_hint_wb">轻点一处应为中性灰或白色的区域——白平衡会将其校正为中性。</string>
+    <string name="editor_sample_hint_tone">轻点一个色调（高光或阴影）作为目标，然后应用。</string>
+    <string name="editor_sample_hint_color">轻点你希望蒙版针对的颜色（例如红色），然后应用。</string>
+    <string name="editor_status_wb_set">已根据中性色设置白平衡</string>
+    <string name="editor_toast_wb_sample_failed">无法为白平衡取样：%1$s</string>
+    <string name="editor_share_export_title">分享导出</string>
+    <string name="editor_status_no_share_target">没有可接收此图片的应用 · 请安装支持分享图片的应用，然后再次点按“分享”</string>
+    <string name="editor_status_no_view_target">没有可打开此图片的应用 · 请安装相册或图片查看器，然后再次点按“查看”</string>
+    <string name="editor_status_view_permission_failed">无法向查看应用授予图片访问权限 · 请再次点按“查看”，或从 Pictures/Spektrafilm 打开</string>
+    <string name="editor_status_share_permission_failed">无法向分享目标授予图片访问权限 · 请再次点按“分享”，或从 Pictures/Spektrafilm 分享</string>
+    <string name="editor_status_cancelling_export">正在取消导出</string>
+    <string name="editor_status_source_access_required">导出前需要来源访问权限</string>
+    <string name="editor_status_grant_storage">授予存储访问权限，然后再次轻点保存到相册</string>
+    <string name="editor_status_unsupported_export">不支持的导出组合</string>
+    <string name="editor_status_export_running">已有导出正在运行</string>
+
+    <!-- Editor top bar -->
+    <string name="editor_open_photo">打开照片</string>
+    <string name="editor_tooltip_export_gallery">保存到相册</string>
+    <string name="editor_exporting">正在导出…</string>
+
+    <!-- Preview region -->
+    <string name="editor_preview_desc_empty">预览画布。尚未载入图像。</string>
+    <string name="editor_preview_desc_compare">原图与效果对比。拖动分割线进行比较。</string>
+    <string name="editor_preview_desc_film" formatted="false">胶片预览。双指捏合或双击缩放，放大后拖动可按全分辨率渲染该区域。轻点隐藏或显示控件；使用预览下方的放大镜按钮打开 100% 颗粒放大镜。</string>
+    <string name="editor_preview_action_magnifier" formatted="false">在中心打开 100% 颗粒放大镜</string>
+    <string name="editor_preview_none">尚无预览</string>
+    <string name="editor_histogram">直方图</string>
+    <string name="editor_toggle_histogram">切换直方图</string>
+    <string name="editor_compare">原图 / 效果对比</string>
+    <string name="editor_crop_transform_tooltip">裁切与变换</string>
+    <string name="editor_crop_transform">裁切与变换</string>
+    <string name="editor_rotate_90">旋转 90°</string>
+
+    <!-- Status pill -->
+    <string name="editor_decoding">正在解码…</string>
+    <string name="editor_rendering">正在渲染…</string>
+    <string name="editor_pill_render_error">渲染错误：%1$s</string>
+    <string name="editor_pill_rendered_in">渲染完成，用时 %1$d 毫秒</string>
+    <string name="editor_pill_rendered_in_text">渲染完成，用时 %1$d 毫秒</string>
+    <string name="editor_pill_error">错误：%1$s</string>
+
+    <!-- Toggle state announced by circular scrim buttons -->
+    <string name="editor_state_on">开</string>
+    <string name="editor_state_off">关</string>
+
+    <!-- Adjustment panels (narrow bottom sheet + wide side panel) -->
+    <string name="editor_panel_title">%1$s 面板</string>
+    <string name="editor_close_panel_named">关闭 %1$s 面板</string>
+    <string name="editor_close">关闭</string>
+    <!-- The 100% magnifier, which until now had no button and could only be reached by
+         tapping the photo — a gesture the guide never documented. -->
+    <string name="editor_magnifier">100% 放大镜</string>
+    <string name="editor_magnifier_tooltip">以 100% 检查颗粒</string>
+    <!-- Single tap on the photo now hides the editor chrome (Lightroom's own gesture). -->
+    <string name="editor_toggle_chrome">隐藏或显示编辑器控件</string>
+    <!-- Reset just this category back to its neutral defaults. %1$s is the category name. -->
+    <string name="editor_reset_category">重置 %1$s</string>
+    <!-- Reset all edits clears the undo history along with the edits, so it is the one
+         action in the editor with no way back. It asks first. -->
+    <string name="editor_reset_edits_confirm_title">重置所有编辑？</string>
+    <string name="editor_reset_edits_confirm_body">每项设置都会恢复默认值，此照片保存的配方也会被清除。此操作无法撤销。</string>
+    <string name="editor_cancel">取消</string>
+    <string name="editor_close_panel">关闭面板</string>
+
+    <!-- Category bar tooltips -->
+    <string name="editor_hint_source">选择照片/RAW、示例图像、直方图与重置编辑</string>
+    <string name="editor_hint_presets">内置风格和已保存的预设；导入/导出与 LUT</string>
+    <string name="editor_hint_simulation">胶片、相纸、曝光与自动曝光测光</string>
+    <string name="editor_hint_input">输入色彩空间、光谱上采样、滤镜、裁切与放大</string>
+    <string name="editor_hint_raw_wb">白平衡——取色器 + 暖度/色调（所有来源），以及 RAW 色温</string>
+    <string name="editor_hint_grain">胶片颗粒结构、大小和模糊</string>
+    <string name="editor_hint_halation">光晕和乳剂内光线散射</string>
+    <string name="editor_hint_glare">印相眩光（随机；默认关闭）</string>
+    <string name="editor_hint_couplers">胶片色彩特征——DIR 成色剂（化学色彩串扰）。普通饱和度在“输出”中。</string>
+    <string name="editor_hint_preflash">放大机预闪光曝光和滤色</string>
+    <string name="editor_hint_experimental">胶片和相纸密度曲线 gamma 系数</string>
+    <string name="editor_hint_tone_curve">最终 RGB 上的点色调曲线——主通道 + 分通道</string>
+    <string name="editor_hint_masks">局部调整——将曝光/饱和度/对比度限制在径向区域</string>
+    <string name="editor_hint_display">输出色彩空间、CCTF 编码和预览尺寸</string>
+
+    <!-- Presets panel -->
+    <string name="style_gallery_title">风格图鉴</string>
+    <string name="style_gallery_custom">自定义预设</string>
+    <string name="style_gallery_return">返回风格图鉴</string>
+    <string name="style_gallery_current">当前风格</string>
+    <string name="style_gallery_photo">当前照片效果</string>
+    <string name="style_gallery_all">全部风格</string>
+    <string name="style_gallery_info_card">包装信息卡</string>
+    <string name="style_gallery_year">%1$d 年素材</string>
+    <string name="style_gallery_box">原版包装（历史版本）</string>
+    <string name="style_gallery_cartridge">原版胶卷</string>
+    <string name="style_gallery_assets_failed">包装图片读取失败，已改用信息卡。</string>
+    <string name="style_gallery_photo_desc">当前照片应用“%1$s”后的效果</string>
+    <string name="style_gallery_effect_desc">当前照片的“%1$s”效果预览</string>
+    <string name="editor_preset_builtin_heading">内置风格</string>
+    <string name="editor_preset_builtin_label">内置预设</string>
+    <string name="editor_preset_loading">正在加载内置风格…</string>
+    <string name="editor_preset_load_failed">内置风格读取失败：内置预设资源缺失或损坏。自定义预设和胶片库仍可使用。</string>
+    <string name="editor_preset_single_pass_note">点选风格即应用。每次只保留一个风格；切换风格会替换上一款，不会叠加。</string>
+    <string name="editor_preset_applied">已应用</string>
+    <string name="editor_preset_applied_modified">已应用 · 已调整</string>
+    <string name="editor_preset_current_applied">当前已应用：%1$s</string>
+    <string name="editor_preset_current_modified">当前画面基于“%1$s”，但之后已手动调整，不再等同于原配方。</string>
+    <string name="editor_preset_empty">还没有自定义预设。把当前调色保存为预设，之后可在其他照片上一键复用。</string>
+    <string name="editor_preset_open_film_library">胶片库 / 自定义胶片</string>
+    <string name="editor_preset_film_library_help">在完整胶片库中选择胶片和相纸——ISO、分类、特性说明和特性曲线都可查看。</string>
+    <string name="editor_preset_apply_builtin">应用内置预设</string>
+    <string name="editor_preset_yours_heading">你的预设</string>
+    <string name="editor_preset_amount">预设强度</string>
+    <string name="editor_preset_amount_tooltip" formatted="false">将应用的预设混合到之前的观感上（0% = 之前，100% = 完整效果）。</string>
+    <string name="editor_preset_name">预设名称</string>
+    <string name="editor_preset_save">将当前设置保存为预设</string>
+    <string name="editor_preset_saved">已保存的预设</string>
+    <!-- Shown instead of a paper name on the four reversal presets that scan the film
+         directly: there is no print stage, so naming a paper would be a lie. -->
+    <string name="editor_preset_scan_positive">按正像扫描</string>
+    <string name="editor_preset_apply">应用</string>
+    <string name="editor_preset_delete">删除</string>
+    <string name="editor_preset_import_json">导入 .json</string>
+    <!-- This one exports the LIVE editor state, not the selected preset. It sat under the
+         saved-preset dropdown labelled "Export / share", which read as exporting that preset. -->
+    <string name="editor_preset_export_share">导出当前观感</string>
+    <string name="editor_preset_export_selected">导出“%1$s”</string>
+    <!-- Saving over an existing preset was silent and permanent. -->
+    <string name="editor_preset_overwrite_title">替换“%1$s”？</string>
+    <string name="editor_preset_overwrite_body">已存在同名预设。替换会覆盖其设置，且无法撤销。</string>
+    <string name="editor_preset_replace">替换</string>
+    <!-- Shown when the typed name is not the name that will be stored. -->
+    <string name="editor_preset_name_resolved">已保存为“%1$s”</string>
+    <string name="editor_preset_copy_settings">复制设置</string>
+    <string name="editor_preset_paste_settings">粘贴设置</string>
+    <string name="editor_lut_size">尺寸</string>
+    <string name="editor_lut_format">格式</string>
+    <string name="editor_lut_baking">正在烘焙 LUT…</string>
+    <string name="editor_lut_export">导出 LUT（%1$s，%2$d³）</string>
+    <string name="editor_lut_explainer">将当前的胶片 + 相纸观感烘焙为 3D LUT。.cube 可导入大多数应用；.clf（Common LUT Format）可导入 DaVinci Resolve / OpenColorIO 2.3+。空间/随机效果（颗粒、光晕、扩散、眩光）无法写入 3D LUT，因此不会包含在烘焙结果中。</string>
+
+    <!-- Source panel -->
+    <string name="editor_source_label">来源：%1$s</string>
+    <string name="editor_source_choose_again">重新选择来源</string>
+    <string name="editor_source_permission_expired">之前的权限已过期、被撤销，或文件已移动。你的配方仍会保留。</string>
+    <string name="editor_source_pick_photo">选择照片</string>
+    <string name="editor_source_open_raw">打开 RAW/DNG</string>
+    <string name="editor_source_use_demo">使用示例图像</string>
+    <string name="editor_source_histogram_help">在预览顶部显示实时 RGB 直方图。</string>
+    <string name="editor_source_autosaved">此图像的编辑会自动保存（原始文件永远不会被修改）。</string>
+    <string name="editor_source_reset_edits">重置编辑 / 清除配方</string>
+    <string name="editor_source_tip" formatted="false">提示：双指捏合缩放 · 双击放大 2 倍 · 轻点一个点查看 100% 颗粒裁切 · 使用预览下方的旋转按钮旋转图像（预览 + 导出）。</string>
+    <string name="editor_source_footer">Film modeling powered by spektrafilm（GPLv3）。预览为提升交互速度会降采样；导出按原始分辨率渲染。</string>
+
+    <!-- Export overlay -->
+    <string name="editor_export_cancel">取消导出</string>
+    <string name="editor_export_rendering">正在以全分辨率渲染…</string>
+    <string name="editor_export_saved">已保存到相册</string>
+    <string name="editor_export_folder" translatable="false">Pictures/Spektrafilm</string>
+    <string name="editor_export_view">查看</string>
+    <string name="editor_export_done">继续编辑</string>
+    <string name="editor_export_share">分享</string>
+
+    <!-- Input section -->
+    <string name="editor_input_title">输入</string>
+    <string name="editor_input_gated_colorspace">引擎会将所有输入按线性 ProPhoto RGB 渲染——其他输入色彩空间尚未接入。</string>
+    <string name="editor_input_color_space">输入色彩空间</string>
+    <string name="editor_input_cctf">应用 CCTF 解码</string>
+    <string name="editor_input_cctf_tooltip">应用色彩空间的逆 CCTF 传递函数</string>
+    <string name="editor_input_creative_wb_heading">创意白平衡</string>
+    <string name="editor_input_creative_wb_desc">在图像进入胶片前进行暖/冷 + 绿/洋红调色——适用于所有来源（RAW、JPEG、HEIC）。与 RAW 白平衡相互独立；0 = 关闭。</string>
+    <string name="editor_input_creative_warmth">创意暖度</string>
+    <string name="editor_input_creative_warmth_tooltip">在胶片“看到”场景之前进行暖/冷调整（线性 ProPhoto 中的 Bradford 适应）。正值 = 更暖。0 = 不改变。</string>
+    <string name="editor_input_creative_tint">创意色调</string>
+    <string name="editor_input_creative_tint_tooltip">绿 ↔ 洋红偏移。正值 = 洋红，负值 = 绿色。0 = 不改变。</string>
+    <string name="editor_wb_eyedropper">取色器——轻点中性色以设置白平衡</string>
+    <string name="editor_input_gated_upsampling">MALLETT2019 尚未实现——目前两个选项都按 HANATOS2025 渲染。</string>
+    <string name="editor_input_spectral_upsampling">光谱上采样</string>
+    <string name="editor_input_adaptation_window">hanatos2025 适应窗口</string>
+    <string name="editor_input_adaptation_window_tooltip">重建光谱时应用 hanatos2025 带通适应窗口。</string>
+    <string name="editor_input_adaptation_surface">hanatos2025 适应表面</string>
+    <string name="editor_input_adaptation_surface_tooltip">重建光谱时应用 hanatos2025 表面适应多项式。</string>
+    <string name="editor_input_spectral_blur">光谱高斯模糊</string>
+    <string name="editor_input_spectral_blur_tooltip">对重建光谱应用高斯模糊 sigma（光谱轴采样；每个采样 5 nm）。0 = 关闭。</string>
+    <string name="editor_input_filter_amplitude">幅度</string>
+    <string name="editor_input_uv_filter">UV 滤镜</string>
+    <string name="editor_input_uv_filter_tooltip">过滤紫外光（幅度、截止波长 nm、sigma nm）。</string>
+    <string name="editor_input_ir_filter">IR 滤镜</string>
+    <string name="editor_input_ir_filter_tooltip">过滤红外光（幅度、截止波长 nm、sigma nm）。</string>
+    <string name="editor_input_upscale">放大倍数</string>
+    <string name="editor_input_upscale_tooltip">放大图像尺寸以提高分辨率</string>
+    <string name="editor_input_crop_enabled">裁切：已启用（使用裁切工具调整）</string>
+    <string name="editor_input_crop_off">裁切：关闭（完整画幅）</string>
+    <string name="editor_input_edit_crop">编辑裁切</string>
+    <string name="editor_input_clear_crop">清除</string>
+    <string name="editor_input_reset_geometry">重置裁切与几何</string>
+
+    <!-- White balance section -->
+    <string name="editor_wb_title">白平衡</string>
+    <string name="editor_wb_eyedropper_desc">轻点照片中的灰色或白色区域，白平衡会自动将其校正为中性。适用于所有来源——也可以使用下方滑块。</string>
+    <string name="editor_wb_warmth">暖度</string>
+    <string name="editor_wb_warmth_tooltip">让图像变暖/变冷。正值 = 更暖；0 = 关闭。适用于所有来源。</string>
+    <string name="editor_wb_tint">色调</string>
+    <string name="editor_wb_tint_tooltip">绿 ↔ 洋红。正值 = 洋红，负值 = 绿色；0 = 关闭。</string>
+    <string name="editor_wb_balance_to_stock">平衡到胶片</string>
+    <string name="editor_wb_balance_tungsten">这是钨丝灯平衡的胶片，因此会把日光场景渲染得偏蓝——这是真实的胶片特性。开启后会按胶片的参考光将输入调暖，从而渲染为中性，相当于在镜头上加 85 滤镜。</string>
+    <string name="editor_wb_balance_daylight">虚拟 85 滤镜——将输入调暖到钨丝灯胶片的参考光，使其渲染为中性。此胶片是日光平衡的（本身已中性），因此在这里没有效果。</string>
+    <string name="editor_wb_raw_heading">RAW 相机白平衡（会重新解码文件）：</string>
+    <string name="editor_wb_camera">相机白平衡</string>
+    <string name="editor_wb_reset_as_shot">重置为相机 / 拍摄时白平衡</string>
+    <string name="editor_wb_custom_only">只有在上方选择“自定义”时，色温和色调才会生效。</string>
+    <string name="editor_wb_temperature">色温 (K)</string>
+    <string name="editor_wb_temperature_tooltip">自定义白平衡的色温，单位为开尔文（1000 K – 12000 K）。</string>
+    <string name="editor_wb_tint_multiplier">色调倍率</string>
+    <string name="editor_wb_tint_multiplier_tooltip">自定义白平衡的绿/洋红色调倍率（1.0 = 中性）。</string>
+
+    <!-- Simulation section (Film / Print / Scanner / Output tabs) -->
+    <string name="editor_sim_title">模拟</string>
+    <string name="editor_sim_tab_film">胶片</string>
+    <string name="editor_sim_tab_print">印相</string>
+    <string name="editor_sim_tab_scanner">扫描仪</string>
+    <string name="editor_sim_tab_output">输出</string>
+    <string name="editor_sim_film_profile">胶片配置</string>
+    <string name="editor_sim_view_film_curves">查看胶片配置曲线</string>
+    <string name="editor_sim_camera_ev">相机补偿 EV</string>
+    <string name="editor_sim_camera_ev_tooltip">为相机的自动曝光增加偏移</string>
+    <string name="editor_sim_film_format">胶片画幅 mm</string>
+    <string name="editor_sim_film_format_tooltip">胶片画幅长边，单位为 mm（8、16、35、60、120）</string>
+    <string name="editor_sim_camera_lens_blur">相机镜头模糊 um</string>
+    <string name="editor_sim_camera_lens_blur_tooltip">相机镜头模糊的高斯滤波 sigma，单位为 um。空间效果——仅在开启光晕（空间分支）时应用。</string>
+    <string name="editor_sim_camera_diffusion">相机柔光镜</string>
+    <string name="editor_sim_print_profile">相纸配置</string>
+    <string name="editor_sim_view_print_curves">查看相纸配置曲线</string>
+    <string name="editor_sim_print_exposure">印相曝光</string>
+    <string name="editor_sim_print_exposure_tooltip">改变虚拟放大机中设置的曝光时间</string>
+    <string name="editor_sim_print_auto_comp">印相自动补偿</string>
+    <string name="editor_sim_print_auto_comp_tooltip">根据相机曝光补偿 EV 自动调整印相曝光</string>
+    <string name="editor_sim_print_y_shift">印相 Y 滤镜偏移</string>
+    <string name="editor_sim_print_y_shift_tooltip">Y 滤镜相对中性的偏移，单位为 Kodak CC</string>
+    <string name="editor_sim_print_m_shift">印相 M 滤镜偏移</string>
+    <string name="editor_sim_print_m_shift_tooltip">M 滤镜相对中性的偏移，单位为 Kodak CC</string>
+    <string name="editor_sim_gated_enlarger_blur">放大机镜头模糊不适用于放大机阶段（引擎中没有调用点）。</string>
+    <string name="editor_sim_enlarger_lens_blur">放大机镜头模糊</string>
+    <string name="editor_sim_enlarger_lens_blur_tooltip">放大机镜头模糊的高斯滤波 sigma</string>
+    <string name="editor_sim_print_diffusion">印相柔光镜</string>
+    <string name="editor_sim_scan_lens_blur">扫描镜头模糊 px</string>
+    <string name="editor_sim_scan_lens_blur_tooltip">扫描仪镜头模糊的高斯滤波 sigma，单位为像素。空间效果——仅在开启光晕（空间分支）时应用。</string>
+    <string name="editor_sim_scan_correction_noop">在负片使用反转片模式时，扫描白/黑校正没有效果——它仅适用于反转片/正片，或在印相模式下。这与 spektrafilm 引擎一致。</string>
+    <string name="editor_sim_scan_white_correction">扫描白点校正</string>
+    <string name="editor_sim_scan_white_correction_tooltip">将扫描白点固定到下方的目标白电平。默认值 0.98 时效果细微——降低白电平可看到高光被拉低。</string>
+    <string name="editor_sim_scan_white_level">扫描白电平</string>
+    <string name="editor_sim_scan_white_level_tooltip">启用白点校正时的目标白电平</string>
+    <string name="editor_sim_scan_black_correction">扫描黑点校正</string>
+    <string name="editor_sim_scan_black_correction_tooltip">将扫描黑点固定到下方的目标黑电平。默认值 0.01 时效果细微——提高黑电平可看到阴影被提亮。</string>
+    <string name="editor_sim_scan_black_level">扫描黑电平</string>
+    <string name="editor_sim_scan_black_level_tooltip">启用黑点校正时的目标黑电平</string>
+    <string name="editor_sim_scan_unsharp">扫描非锐化蒙版</string>
+    <string name="editor_sim_scan_unsharp_tooltip">[sigma，单位为像素，强度]</string>
+    <string name="editor_sim_output_color_space">输出色彩空间</string>
+    <string name="editor_sim_output_gamut">输出色域压缩</string>
+    <string name="editor_gamut_off">关闭</string>
+    <string name="editor_gamut_off_no_clip">关闭（不裁切）</string>
+    <string name="editor_gamut_aces">ACES（收敛超出色域的颜色）</string>
+    <string name="editor_gamut_oklch">Oklch（感知均匀，保留色相）</string>
+    <string name="editor_gamut_oklrab">Oklrab（感知均匀，亮度更均匀）</string>
+    <string name="editor_gamut_jzazbz">Jzazbz（感知均匀，蓝色更稳定）</string>
+    <string name="editor_gamut_cam16ucs">CAM16（感知均匀，外观模型）</string>
+    <string name="editor_gamut_spectral_locus">光谱轨迹（收敛过饱和输入）</string>
+    <string name="editor_sim_input_gamut">输入色域压缩</string>
+    <string name="editor_sim_saturation">饱和度</string>
+    <string name="editor_sim_saturation_tooltip">输出的整体色彩鲜艳程度。负值 = 更柔和/更淡（收敛过于硬朗的观感）；正值 = 更鲜艳。在胶片渲染之后应用。</string>
+    <string name="editor_sim_vibrance">鲜艳度</string>
+    <string name="editor_sim_vibrance_tooltip">类似饱和度，但更偏向低饱和颜色，因此已经鲜艳的色调（以及肤色）变化较小。在胶片渲染之后应用。</string>
+    <string name="editor_sim_gamut_compression">色域压缩</string>
+    <string name="editor_sim_gamut_compression_tooltip">ACES 风格：将非常鲜艳的颜色拉向中性，以柔化生硬的青色/边缘杂色。0 = 关闭。当鲜艳高光看起来不自然时很有帮助。</string>
+    <string name="editor_sim_saving_cctf">保存 CCTF 编码</string>
+    <string name="editor_sim_saving_cctf_tooltip">是否将 CCTF 写入保存的图像文件</string>
+    <string name="editor_sim_slide_mode">反转片模式（跳过印相）</string>
+    <string name="editor_sim_slide_mode_tooltip">直接显示扫描后的胶片，而不是相纸——这是反转片/正片的自然查看方式（正像）。对于负片，这会显示原始橙色负片。</string>
+
+    <!-- Diffusion filter group -->
+    <string name="editor_diff_toggle_tooltip">在此阶段切换柔光镜。</string>
+    <string name="editor_diff_hide_details">隐藏柔光镜详情</string>
+    <string name="editor_diff_show_details">显示柔光镜详情</string>
+    <string name="editor_diff_family">柔光镜系列</string>
+    <string name="editor_diff_strength">柔光强度</string>
+    <string name="editor_diff_strength_tooltip">商业滤镜挡位：0、1/8、1/4、1/2、1、2。</string>
+    <string name="editor_diff_spatial_scale">空间尺度</string>
+    <string name="editor_diff_spatial_scale_tooltip">图像平面 PSF 宽度的倍率。</string>
+    <string name="editor_diff_halo_warmth">光晕暖度</string>
+    <string name="editor_diff_halo_warmth_tooltip">在光晕暖度轴上的附加偏移。</string>
+    <string name="editor_diff_core_intensity">核心强度</string>
+    <string name="editor_diff_core_size">核心大小</string>
+    <string name="editor_diff_halo_intensity">光晕强度</string>
+    <string name="editor_diff_halo_size">光晕大小</string>
+    <string name="editor_diff_bloom_intensity">泛光强度</string>
+    <string name="editor_diff_bloom_size">泛光大小</string>
+
+    <!-- Grain section -->
+    <string name="editor_grain_title">颗粒</string>
+    <string name="editor_grain_particle_area">颗粒面积 um2</string>
+    <string name="editor_grain_particle_area_tooltip">颗粒面积，单位为 um2，与 ISO 相关。</string>
+    <string name="editor_grain_blur">模糊</string>
+    <string name="editor_grain_blur_tooltip">颗粒高斯模糊的 sigma，单位为像素。</string>
+    <string name="editor_grain_sublayers_active">子层启用</string>
+    <string name="editor_grain_particle_scale">颗粒缩放</string>
+    <string name="editor_grain_particle_scale_tooltip">RGB 各层颗粒面积的缩放。</string>
+    <string name="editor_grain_particle_scale_layers">子层颗粒缩放</string>
+    <string name="editor_grain_particle_scale_layers_tooltip">每个颜色层内各子层颗粒面积的缩放。</string>
+    <string name="editor_grain_density_min">最小密度</string>
+    <string name="editor_grain_density_min_tooltip">颗粒的最小密度（0.03-0.06）。</string>
+    <string name="editor_grain_uniformity">均匀度</string>
+    <string name="editor_grain_uniformity_tooltip">颗粒的均匀度（0.94-0.98）。</string>
+    <string name="editor_grain_blur_dye_clouds">染料云模糊 um</string>
+    <string name="editor_grain_blur_dye_clouds_tooltip">染料云高斯模糊 sigma 的缩放，单位为 um。</string>
+    <string name="editor_grain_micro_structure">微观结构</string>
+    <string name="editor_grain_micro_structure_tooltip">[模糊 sigma um，分子团尺寸 nm]</string>
+    <string name="editor_grain_sublayers">子层</string>
+    <string name="editor_grain_reset">将颗粒重置为默认值</string>
+
+    <!-- Preflash section -->
+    <string name="editor_preflash_title">预闪光</string>
+    <string name="editor_preflash_exposure">曝光</string>
+    <string name="editor_preflash_exposure_tooltip">相纸预闪光的曝光值，单位为 EV</string>
+    <string name="editor_preflash_y_shift">Y 滤镜偏移</string>
+    <string name="editor_preflash_y_shift_tooltip">预闪光时 Y 滤镜相对中性的偏移（Kodak CC）</string>
+    <string name="editor_preflash_m_shift">M 滤镜偏移</string>
+    <string name="editor_preflash_m_shift_tooltip">预闪光时 M 滤镜相对中性的偏移（Kodak CC）</string>
+
+    <!-- Halation section -->
+    <string name="editor_hal_title">光晕</string>
+    <string name="editor_hal_amount">光晕强度</string>
+    <string name="editor_hal_amount_tooltip">高层光晕强度倍率。</string>
+    <string name="editor_hal_spatial_scale">光晕空间尺度</string>
+    <string name="editor_hal_spatial_scale_tooltip">高层光晕大小倍率。</string>
+    <string name="editor_hal_scatter_amount">散射强度</string>
+    <string name="editor_hal_scatter_amount_tooltip">高层散射强度。1.0 = 完整物理散射。</string>
+    <string name="editor_hal_boost_ev">提升 EV</string>
+    <string name="editor_hal_boost_ev_tooltip">高光提升的最大挡数。</string>
+    <string name="editor_hal_scatter_spatial_scale">散射空间尺度</string>
+    <string name="editor_hal_scatter_spatial_scale_tooltip">高层散射大小倍率（1.0 = 物理默认值）。</string>
+    <string name="editor_hal_protect_ev">保护 EV</string>
+    <string name="editor_hal_protect_ev_tooltip">中灰以上受保护的范围（提升起始点），单位为挡。</string>
+    <string name="editor_hal_boost_range">提升范围</string>
+    <string name="editor_hal_boost_range_tooltip">高光提升进入的速度（0-1）。</string>
+    <string name="editor_hal_scatter_core">散射核心 um</string>
+    <string name="editor_hal_scatter_core_tooltip">每个通道散射核心高斯函数的 sigma，单位为 um。</string>
+    <string name="editor_hal_scatter_tail">散射尾部 um</string>
+    <string name="editor_hal_scatter_tail_tooltip">每个通道散射指数尾部的衰减常数，单位为 um。</string>
+    <string name="editor_hal_scatter_tail_weight" formatted="false">散射尾部权重 %</string>
+    <string name="editor_hal_scatter_tail_weight_tooltip" formatted="false">每个通道散射尾部高斯函数的权重（0-100%）。</string>
+    <string name="editor_hal_strength" formatted="false">光晕强度 %</string>
+    <string name="editor_hal_strength_tooltip" formatted="false">每个通道的总背反射光晕幅度（0-100%）。</string>
+    <string name="editor_hal_first_sigma">首次反射 sigma um</string>
+    <string name="editor_hal_first_sigma_tooltip">每个通道第一次光晕反射的 sigma，单位为 um。</string>
+    <string name="editor_hal_n_bounces">反射次数</string>
+    <string name="editor_hal_n_bounces_tooltip">叠加的多重反射高斯数量（通常为 2-3）。</string>
+    <string name="editor_hal_bounce_decay">反射衰减</string>
+    <string name="editor_hal_bounce_decay_tooltip">每次反射的幅度衰减比例（0.3-0.7）。</string>
+    <string name="editor_hal_renormalize">重新归一化</string>
+    <string name="editor_hal_renormalize_tooltip">除以（1 + 反射幅度之和），以保持中灰不变。</string>
+
+    <!-- Couplers section -->
+    <string name="editor_coup_title">胶片色彩特征（成色剂）</string>
+    <string name="editor_coup_desc">模拟胶片的化学色彩串扰（DIR 成色剂）——这是胶片特有的色彩分离和边缘效应的来源。想要普通饱和度控制？请使用“模拟 → 输出”中的饱和度/鲜艳度。</string>
+    <string name="editor_coup_amount">效果强度</string>
+    <string name="editor_coup_amount_tooltip">DIR 成色剂抑制矩阵的全局倍率。</string>
+    <string name="editor_coup_samelayer">层内强度</string>
+    <string name="editor_coup_samelayer_tooltip">同层（对角线）抑制——通道内的对比度/锐度。</string>
+    <string name="editor_coup_interlayer">跨色强度</string>
+    <string name="editor_coup_interlayer_tooltip">跨层（非对角线）抑制——每个染料层向其他层渗入的程度。</string>
+    <string name="editor_coup_gated_gamma">DIR gamma 矩阵由引擎按每种胶片设置（每种胶片都会覆盖这些值）——调整它们没有效果。</string>
+    <string name="editor_coup_gamma_samelayer">层内曲线（R、G、B）</string>
+    <string name="editor_coup_gamma_samelayer_tooltip">每个通道的同层 DIR gamma（R、G、B）。</string>
+    <string name="editor_coup_mix_r">颜色混合 R→G/B</string>
+    <string name="editor_coup_mix_r_tooltip">跨通道 DIR 抑制（颜色混合矩阵项）：从 R 到 G 和 B。</string>
+    <string name="editor_coup_mix_g">颜色混合 G→R/B</string>
+    <string name="editor_coup_mix_g_tooltip">跨通道 DIR 抑制（颜色混合矩阵项）：从 G 到 R 和 B。</string>
+    <string name="editor_coup_mix_b">颜色混合 B→R/G</string>
+    <string name="editor_coup_mix_b_tooltip">跨通道 DIR 抑制（颜色混合矩阵项）：从 B 到 R 和 G。</string>
+    <string name="editor_coup_bleed_radius">颜色渗出半径 (µm)</string>
+    <string name="editor_coup_bleed_radius_tooltip">成色剂扩散的 sigma，单位为 µm（5-20 µm）。</string>
+    <string name="editor_coup_bleed_tail">颜色渗出尾部 (µm)</string>
+    <string name="editor_coup_bleed_tail_tooltip">成色剂扩散的长程尾部 sigma，单位为 µm。</string>
+    <string name="editor_coup_bleed_tail_weight">颜色渗出尾部权重</string>
+    <string name="editor_coup_bleed_tail_weight_tooltip">长程扩散尾部的权重。</string>
+
+    <!-- Glare section -->
+    <string name="editor_glare_title">眩光</string>
+    <string name="editor_glare_desc">眩光仅适用于印相路径（在反转片模式/直接扫描胶片时没有效果）。</string>
+    <string name="editor_glare_percent">百分比</string>
+    <string name="editor_glare_percent_tooltip">眩光光线的百分比（通常为 0.1-0.25）</string>
+    <string name="editor_glare_roughness">粗糙度</string>
+    <string name="editor_glare_roughness_tooltip">眩光光线的粗糙度（0-1）</string>
+    <string name="editor_glare_blur">模糊</string>
+    <string name="editor_glare_blur_tooltip">眩光高斯模糊的 sigma，单位为像素</string>
+
+    <!-- Experimental section -->
+    <string name="editor_exp_title">实验性</string>
+    <string name="editor_exp_film_gamma">胶片 gamma 系数</string>
+    <string name="editor_exp_film_gamma_tooltip">负片密度曲线的 gamma 系数。</string>
+    <string name="editor_exp_print_gamma">印相 gamma 系数</string>
+    <string name="editor_exp_print_gamma_tooltip">相纸的 gamma 系数。</string>
+    <string name="editor_exp_morph">印相曲线变形 (s023)</string>
+    <string name="editor_exp_morph_tooltip">使用相纸的参数化密度曲线模型，通过耦合 gamma + 显影液耗竭变形重新显影印相。关闭 = 使用该胶片测得的曲线。</string>
+    <string name="editor_exp_morph_gamma">变形 · 总 gamma</string>
+    <string name="editor_exp_morph_gamma_tooltip">应用于所有印相曲线的全局耦合 gamma。</string>
+    <string name="editor_exp_morph_fast">变形 · 快速层</string>
+    <string name="editor_exp_morph_fast_tooltip">快速（低阈值）子层的 gamma。</string>
+    <string name="editor_exp_morph_slow">变形 · 慢速层</string>
+    <string name="editor_exp_morph_slow_tooltip">慢速（高阈值）子层的 gamma。</string>
+    <string name="editor_exp_morph_red">变形 · 红色 gamma</string>
+    <string name="editor_exp_morph_red_tooltip">分通道 gamma（红）。</string>
+    <string name="editor_exp_morph_green">变形 · 绿色 gamma</string>
+    <string name="editor_exp_morph_green_tooltip">分通道 gamma（绿）。</string>
+    <string name="editor_exp_morph_blue">变形 · 蓝色 gamma</string>
+    <string name="editor_exp_morph_blue_tooltip">分通道 gamma（蓝）。</string>
+    <string name="editor_exp_morph_exhaustion">变形 · 显影液耗竭</string>
+    <string name="editor_exp_morph_exhaustion_tooltip">向 Gumbel 匹配的曲线形状混合（肩部滚降）；保持中灰不变。</string>
+
+    <!-- Plain-language section help (ParamHelp) -->
+    <string name="help_grain_title">颗粒</string>
+    <string name="help_grain_summary">让胶片看起来像胶片的那种细密闪光质感。</string>
+    <string name="help_grain_body">真实胶片由微小的感光颗粒构成，它们随机聚集成团，就形成了你看到的颗粒。颗粒越大——也就是感光度越高、速度越快的胶片——颗粒越粗、越明显；分通道缩放可以让某个颜色层的颗粒比其他层更粗。调低可获得干净现代的观感，调高则更有粗粝的复古感。颗粒以微米为单位，因此在小尺寸屏幕预览中可能比全分辨率导出中显得更细腻。</string>
+    <string name="help_halation_title">光晕</string>
+    <string name="help_halation_summary">明亮高光周围泛出的柔和红色辉光。</string>
+    <string name="help_halation_body">在真实胶片上，强光穿过乳剂层后从片基背面反射回来，使亮部周围的胶片再次曝光——路灯、透过树叶的阳光、镜面高光都会产生这种效果。“光晕强度”决定辉光的强弱，而“散射”会在乳剂内部增加更宽广、更细微的光线扩散；“提升 EV”决定高光要多亮才会开始泛光。调高可获得梦幻的电影感，或关闭整个区域，得到干净锐利的数字高光。</string>
+    <string name="help_couplers_title">胶片色彩特征（成色剂）</string>
+    <string name="help_couplers_summary">胶片标志性的色彩分离、边缘力度和饱和度滚降。</string>
+    <string name="help_couplers_body">胶片显影时，某一颜色层形成的染料会在化学上抑制相邻层——这就是“DIR 成色剂”效应。这种串扰是胶片色彩如此独特的重要原因：边缘更清晰，饱和度呈现特有的非线性。“效果强度”缩放整体特征，跨色控制决定每种颜色向其他颜色渗入的程度。这是特征控制，不是普通饱和度滑块——如果想要普通的“更鲜艳/更淡”，请使用“输出”中的饱和度/鲜艳度。</string>
+    <string name="help_print_gamma_title">胶片与印相对比度（gamma）</string>
+    <string name="help_print_gamma_summary">负片和相纸本身固有的原始对比度。</string>
+    <string name="help_print_gamma_body">每种胶片和相纸都有一条特性曲线，它的“gamma”表示曲线有多陡——相当于光化学层面的对比度控制。印相 gamma 越高，画面越硬朗、对比越强；越低则越平。日常调整对比度时请先用对比度滑块；这些是塑造整体观感骨架的底层光化学旋钮。</string>
+    <string name="help_preflash_title">预闪光</string>
+    <string name="help_preflash_summary">对相纸进行微弱均匀的预曝光，以缓和生硬的对比度。</string>
+    <string name="help_preflash_body">暗房印相师有时会在正式曝光前，用低强度均匀光线对相纸闪一下。这会提亮最深的阴影，并温和地降低印相对比度，而不影响高光。提高“曝光”可获得更柔和、更通透的阴影；Y 和 M 滤镜偏移会像放大机滤色一样，给这束预闪光染色。</string>
+    <string name="help_glare_title">眩光</string>
+    <string name="help_glare_summary">光线在相纸表面散射形成的蒙雾。</string>
+    <string name="help_glare_body">这里模拟在相纸和扫描仪周围乱反射的杂散光，它会略微抬升黑位，并在画面上蒙一层柔和雾气。这是一种随机效果，因此默认关闭，也不属于精确、可重复的导出。提高“百分比”可获得更朦胧、对比度更低、更怀旧的感觉。</string>
+
+    <string name="editor_wb_mode_as_shot">拍摄时</string>
+    <string name="editor_wb_mode_daylight">日光</string>
+    <string name="editor_wb_mode_tungsten">钨丝灯</string>
+    <string name="editor_wb_mode_custom">自定义</string>
+    <string name="editor_input_upsampling_hanatos2025">HANATOS2025</string>
+    <string name="editor_input_upsampling_mallett2019">MALLETT2019</string>
+    <string name="editor_sim_scan_unsharp_amount">强度</string>
+    <string name="editor_diff_family_glimmerglass">Glimmerglass</string>
+    <string name="editor_diff_family_black_pro_mist">Black Pro-Mist</string>
+    <string name="editor_diff_family_pro_mist">Pro-Mist</string>
+    <string name="editor_diff_family_cinebloom">CineBloom</string>
+    <!-- Display section -->
+    <string name="editor_display_title">显示</string>
+    <string name="editor_display_preview_max_size">预览最大尺寸</string>
+    <string name="editor_display_preview_max_size_tooltip">预览图像长边的最大像素数。</string>
+
+    <!-- Stock catalog and built-in preset metadata (official model names stay in English) -->
+    <string name="stock_group_other">其他</string>
+    <string name="stock_group_color_negative">彩色负片（静态摄影）</string>
+    <string name="stock_group_color_reversal">彩色反转片</string>
+    <string name="stock_group_motion_picture_negative">电影负片</string>
+    <string name="stock_group_print_film">电影印片</string>
+    <string name="stock_group_print_paper">RGB 相纸</string>
+    <string name="stock_balance_daylight">日光</string>
+    <string name="stock_balance_tungsten">钨丝灯</string>
+    <string name="stock_summary_kodak_portra_160">细腻、低对比的人像负片，肤色柔和自然，色彩温和。</string>
+    <string name="stock_summary_kodak_portra_400">温暖、宽容、对肤色友好；经典的全能婚礼与人像负片。</string>
+    <string name="stock_summary_kodak_portra_800">最后一批高速彩色负片之一，在弱光下仍保留 Portra 的自然色调。</string>
+    <string name="stock_summary_kodak_portra_800_push1">Portra 800 按 EI 1600 曝光并推冲一挡，速度、对比度和颗粒均有所增加。</string>
+    <string name="stock_summary_kodak_portra_800_push2">Portra 800 按 EI 3200 曝光并推冲两挡，适合极弱光拍摄，颗粒和对比度强烈。</string>
+    <string name="stock_summary_kodak_ektar_100">世界上颗粒最细的彩色负片，以鲜艳饱满的风光色彩著称。</string>
+    <string name="stock_summary_kodak_gold_200">怀旧的消费级胶片，带有温暖的黄色与金色调，适合阳光下的黄金时刻快照。</string>
+    <string name="stock_summary_kodak_ultramax_400">色彩鲜明、用途广泛的消费级 400 胶片，颗粒粗粝而讨喜。</string>
+    <string name="stock_summary_fujifilm_pro_400h">一款已停产的专业胶片，靠第四色层带来通透的粉彩、冷调绿色和柔和肤色。</string>
+    <string name="stock_summary_fujifilm_c200">经济实惠的日常负片，色彩清晰、略偏冷，肤色准确。</string>
+    <string name="stock_summary_fujifilm_xtra_400">用途广泛的消费级 400 胶片，第四色层让混合光下的色调更干净。</string>
+    <string name="stock_summary_kodak_ektachrome_100">复活的 E-6 反转片，中性色干净、颗粒细腻，作为反转片拥有宽广的色调范围。</string>
+    <string name="stock_summary_fujifilm_provia_100f">参考级 E-6 反转片：色彩自然准确，对比适中，颗粒细腻。</string>
+    <string name="stock_summary_fujifilm_velvia_100">高对比、超高饱和的反转片，以强烈的色彩深受风光摄影师喜爱。</string>
+    <string name="stock_summary_kodak_kodachrome_64">传奇的 K-14 反转片（2009 年停产），色彩浓郁且具有档案级稳定性，并带有独特的暖调。</string>
+    <string name="stock_summary_kodak_vision3_50d">最锐利、颗粒最细的 Vision3 胶片，日光平衡，适合明亮的电影摄影。</string>
+    <string name="stock_summary_kodak_vision3_250d">中速日光电影负片，在细颗粒和宽广的曝光宽容度之间取得平衡。</string>
+    <string name="stock_summary_kodak_vision3_200t">钨丝灯平衡电影负片，在人造光下颗粒低、色彩浓郁。</string>
+    <string name="stock_summary_kodak_vision3_500t">数字时代胶片中高速、钨丝灯平衡的主力，弱光表现强，动态范围广。</string>
+    <string name="stock_summary_kodak_verita_200d">新型日光电影负片，饱和度高、肤色温暖，具有更短、更经典的电影宽容度。</string>
+    <string name="stock_summary_kodak_2383">标准影院发行印片，在银幕上带来浓郁的黑位和中性高光。</string>
+    <string name="stock_summary_kodak_2393">高级印片，黑位比 2383 更深、高光更亮、色彩饱和度更高。</string>
+    <string name="stock_summary_kodak_portra_endura">低对比 RA-4 相纸，肤色自然，色彩饱和度适中而克制。</string>
+    <string name="stock_summary_kodak_supra_endura">中等对比 RA-4 相纸，肤色准确、饱和度更鲜活，适合鲜艳的日常印相。</string>
+    <string name="stock_summary_kodak_ultra_endura">高对比 RA-4 相纸，黑位更黑、饱和度强烈，适合有冲击力的展示印相。</string>
+    <string name="stock_summary_kodak_endura_premier">Kodak 最后仍在生产的 RA-4 相纸，对比度可调，图像稳定性超过 100 年。</string>
+    <string name="stock_summary_kodak_ektacolor_edge">面向消费级/小型冲印店的 RA-4 相纸，肤色自然，日常色彩浓郁动人。</string>
+    <string name="stock_summary_fujifilm_crystal_archive_typeii">富士的标杆 RA-4 相纸，层次丰富、色彩鲜艳，色彩稳定性出色。</string>
+    <string name="preset_group_cinema">电影</string>
+    <string name="preset_group_consumer">消费级</string>
+    <string name="preset_group_creative">创意</string>
+    <string name="preset_group_landscape">风光</string>
+    <string name="preset_group_low_light">弱光</string>
+    <string name="preset_group_neutral">中性</string>
+    <string name="preset_group_portrait">人像</string>
+    <string name="preset_group_slide">反转片</string>
+    <string name="preset_name_portra160_endura_softlight">Portra 160 — 柔光人像</string>
+    <string name="preset_name_portra400_endura_wedding">Portra 400 — 温暖婚礼</string>
+    <string name="preset_name_portra800_endura_natural">Portra 800 — 自然弱光</string>
+    <string name="preset_name_pro400h_crystalarchive_pastel">Pro 400H — 通透粉彩</string>
+    <string name="preset_name_ektar100_ultra_landscape">Ektar 100 — 浓烈风光</string>
+    <string name="preset_name_ektar100_supra_travel">Ektar 100 — 海岸旅行</string>
+    <string name="preset_name_superia400_crystalarchive_landscape">Superia X-TRA 400 — 冷调绿意</string>
+    <string name="preset_name_velvia100_chrome_landscape">Velvia 100 — 反转风光</string>
+    <string name="preset_name_provia100f_chrome_natural">Provia 100F — 自然反转</string>
+    <string name="preset_name_ektachrome_e100_chrome_clean">Ektachrome E100 — 干净反转</string>
+    <string name="preset_name_kodachrome64_chrome_nostalgic">Kodachrome 64 — 怀旧反转</string>
+    <string name="preset_name_vision3_250d_2383_daycinema">Vision3 250D — 日光电影</string>
+    <string name="preset_name_vision3_50d_2393_premier">Vision3 50D — 高级印片</string>
+    <string name="preset_name_vision3_200t_2383_interior">Vision3 200T — 钨丝灯室内</string>
+    <string name="preset_name_verita200d_2383_warmcine">Verita 200D — 暖调电影</string>
+    <string name="preset_name_vision3_500t_2383_night">Vision3 500T — 夜景电影</string>
+    <string name="preset_name_portra800_push1_endura_night">Portra 800 +1 — 推冲夜景</string>
+    <string name="preset_name_portra800_push2_endura_available">Portra 800 +2 — 可用光</string>
+    <string name="preset_name_gold200_ektacolor_goldenhour">Gold 200 — 黄金时刻</string>
+    <string name="preset_name_ultramax400_ektacolor_snapshot">UltraMax 400 — 随手快照</string>
+    <string name="preset_name_superia400_crystalarchive_cool">Superia X-TRA 400 — 冷调快照</string>
+    <string name="preset_name_c200_crystalarchive_budget">Fujicolor C200 — 日常经济</string>
+    <string name="preset_name_portra400_promist_dreamy">梦幻 Pro-Mist — Portra 400</string>
+    <string name="preset_name_portra400_faded_matte">褪色哑光 — 提亮黑位</string>
+    <string name="preset_name_ektar100_bleach_bypass">漂白旁路 — 高对比</string>
+    <string name="preset_name_portra800_wide_gamut_glow">广色域辉光 — Portra 800</string>
+    <string name="preset_name_neutral_adobe_like">中性 — 干净基准</string>
+    <string name="preset_desc_portra160_endura_softlight">颗粒最细、对比最低的 Portra 搭配低对比 Endura 相纸。柔和、通透，肤色真实。</string>
+    <string name="preset_desc_portra400_endura_wedding">柔和温暖的宽容肤色，印在 Portra Endura 上——经典的温和对比婚礼负片，自动测光。</string>
+    <string name="preset_desc_portra800_endura_natural">把 Portra 的色调带入昏暗光线：颗粒略多，Endura 上带有柔和的高光泛光。</string>
+    <string name="preset_desc_pro400h_crystalarchive_pastel">过曝的富士粉彩，搭配干净的绿色和清冷柔和的肤色，印在 Crystal Archive 上。降低的成色剂让色彩更温和。</string>
+    <string name="preset_desc_ektar100_ultra_landscape">世界上最细腻的负片，以高对比印在 Ultra Endura 上。饱和的成色剂、清晰的扫描、矩阵测光。</string>
+    <string name="preset_desc_ektar100_supra_travel">Ektar 搭配更鲜活的 Supra Endura：色彩鲜艳但比 Ultra 印相柔和半挡，适合天空和水面。</string>
+    <string name="preset_desc_superia400_crystalarchive_landscape">富士第四色层的绿/青特征，印在 Crystal Archive 上，并为植被加入轻微的冷调印相平衡。</string>
+    <string name="preset_desc_velvia100_chrome_landscape">超高饱和、高对比的反转片，直接按反转片扫描。颗粒细腻、锐度清晰，不经过印相阶段。</string>
+    <string name="preset_desc_provia100f_chrome_natural">参考级 E-6 反转片：准确、适度的对比色彩和细腻颗粒。按反转片扫描。</string>
+    <string name="preset_desc_ektachrome_e100_chrome_clean">复活的 E-6，中性色干净，作为反转片拥有宽广的色调范围。颗粒细腻克制。</string>
+    <string name="preset_desc_kodachrome64_chrome_nostalgic">传奇的 K-14 观感：浓郁、具有档案感的色彩，暖调特征和略带力度的对比。</string>
+    <string name="preset_desc_vision3_250d_2383_daycinema">日光电影负片经过标准 2383 发行印片：中性高光、浓郁黑位、宽广宽容度。</string>
+    <string name="preset_desc_vision3_50d_2393_premier">最锐利、颗粒最细的 Vision3 搭配高级 2393：更深的黑位、更亮的高光、更大胆的色彩。</string>
+    <string name="preset_desc_vision3_200t_2383_interior">钨丝灯平衡电影负片，适合温暖室内：颗粒低、色彩浓郁，印相平衡略偏暖。</string>
+    <string name="preset_desc_verita200d_2383_warmcine">新型日光电影负片：饱和度高、肤色温暖，在 2383 上呈现更短、更经典的电影宽容度。</string>
+    <string name="preset_desc_vision3_500t_2383_night">2383 上的高速钨丝灯主力：弱光宽容度、中性钨丝灯平衡，以及实用光源周围干净、抑制了 rem-jet 的高光。</string>
+    <string name="preset_desc_portra800_push1_endura_night">Portra 800 按 EI 1600 推冲一挡：对比度更高，颗粒更粗、更有活力，阴影更薄。</string>
+    <string name="preset_desc_portra800_push2_endura_available">Portra 800 按 EI 3200 推冲两挡：强烈的颗粒和对比度，适合最暗的可用光拍摄。</string>
+    <string name="preset_desc_gold200_ektacolor_goldenhour">怀旧的温暖黄色与金色，印在消费级 Ektacolor Edge 上——为阳光下的黄金时刻快照而生。</string>
+    <string name="preset_desc_ultramax400_ektacolor_snapshot">色彩鲜明、颗粒粗粝的消费级 400，印在 Ektacolor Edge 上。更颗粒化、日常闪光灯快照的观感。</string>
+    <string name="preset_desc_superia400_crystalarchive_cool">富士偏冷的消费级 400，在 Crystal Archive 上呈现干净的混合光绿色与蓝色。</string>
+    <string name="preset_desc_c200_crystalarchive_budget">日本制造的 Fujicolor C200，现已停产：经济、清晰、略偏冷的色彩，印在 Crystal Archive 上。它不是今天的“Fujifilm 200”，后者是换标的 Kodak Gold 200。</string>
+    <string name="preset_desc_portra400_promist_dreamy">Portra 400 搭配明确选择的 Black Pro-Mist 柔光镜：高光泛光、柔和辉光，并带一点光谱雾感。</string>
+    <string name="preset_desc_portra400_faded_matte">低饱和的哑光印相：色调曲线提亮阴影并压平高光，配合预闪的低对比基底。</string>
+    <string name="preset_desc_ektar100_bleach_bypass">留银观感：降低成色剂以获得去饱和的色彩，陡峭的印相曲线，以及压暗对比的 S 曲线。</string>
+    <string name="preset_desc_portra800_wide_gamut_glow">Portra 800 以 Adobe RGB 导出，带有柔和的蒙雾眩光和温暖的高光泛光——适合广色域显示器和印刷。</string>
+    <string name="preset_desc_neutral_adobe_like">干净、近乎中性的渲染：颗粒、光晕、成色剂和眩光全部关闭，直接使用 gamma。一个平坦的起点，便于自行叠加。</string>
+</resources>

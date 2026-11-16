@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spektrafilm for Android. GPLv3. -->
+<!-- translatable="false" entries are copied verbatim so this file's key inventory stays
+     one-to-one with values/ and the resource-consistency test can prove it. They are never
+     translated: brand names, official model names, links and legal attribution stay as-is. -->
+<resources>
+    <string name="app_name">光谱胶片</string>
+    <string name="screen_about_product_name" translatable="false">Spektrafilm</string>
+    <string name="screen_about_android_name" translatable="false">Spektrafilm for Android</string>
+</resources>

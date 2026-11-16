@@ -738,4 +738,24 @@
     <string name="preset_desc_ektar100_bleach_bypass">A silver-retention look: muted couplers for desaturated color, a steep print, and an S-curve for crushed contrast.</string>
     <string name="preset_desc_portra800_wide_gamut_glow">Portra 800 exported in Adobe RGB with a soft veiling glare and a warm highlight bloom — for wide-gamut displays and print.</string>
     <string name="preset_desc_neutral_adobe_like">A clean, near-neutral rendering: grain, halation, couplers and glare off, straight gamma. A flat base to build from.</string>
+    <!-- Single-page capture workbench -->
+    <string name="workbench_title">Capture</string>
+    <string name="workbench_open_photo">Choose a photo</string>
+    <string name="workbench_open_raw">Open a RAW file</string>
+    <string name="workbench_darkroom">Open the professional darkroom</string>
+    <string name="workbench_exposure">EV</string>
+    <string name="workbench_grain">Grain</string>
+    <string name="workbench_halation">Halation</string>
+    <string name="workbench_meter_title">Film meter</string>
+    <string name="workbench_shutter">Shutter</string>
+    <string name="workbench_shutter_desc">Shutter, take a photo</string>
+    <string name="workbench_shutter_ready">Ready</string>
+    <string name="workbench_shutter_unavailable">Camera not ready</string>
+    <string name="workbench_flash_auto">Flash Auto</string>
+    <string name="workbench_flash_off">Flash Off</string>
+    <string name="workbench_flash_on">Flash On</string>
+    <string name="workbench_render_note">The film render is made after you confirm the photo</string>
+    <string name="workbench_photo_desc">Current photo in the capture workbench</string>
+    <string name="workbench_no_photo">Choose a photo or RAW file to begin</string>
+    <string name="workbench_return">Return to the capture workbench</string>
 </resources>

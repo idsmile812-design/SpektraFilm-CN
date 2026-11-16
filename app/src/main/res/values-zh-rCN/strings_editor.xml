@@ -741,4 +741,24 @@
     <string name="preset_desc_ektar100_bleach_bypass">留银观感：降低成色剂以获得去饱和的色彩，陡峭的印相曲线，以及压暗对比的 S 曲线。</string>
     <string name="preset_desc_portra800_wide_gamut_glow">Portra 800 以 Adobe RGB 导出，带有柔和的蒙雾眩光和温暖的高光泛光——适合广色域显示器和印刷。</string>
     <string name="preset_desc_neutral_adobe_like">干净、近乎中性的渲染：颗粒、光晕、成色剂和眩光全部关闭，直接使用 gamma。一个平坦的起点，便于自行叠加。</string>
+    <!-- 单页拍摄工作台 -->
+    <string name="workbench_title">拍摄工作台</string>
+    <string name="workbench_open_photo">选择照片</string>
+    <string name="workbench_open_raw">打开 RAW 文件</string>
+    <string name="workbench_darkroom">打开专业暗房</string>
+    <string name="workbench_exposure">曝光</string>
+    <string name="workbench_grain">颗粒</string>
+    <string name="workbench_halation">光晕</string>
+    <string name="workbench_meter_title">胶片读数</string>
+    <string name="workbench_shutter">快门</string>
+    <string name="workbench_shutter_desc">快门，拍照</string>
+    <string name="workbench_shutter_ready">就绪</string>
+    <string name="workbench_shutter_unavailable">相机未就绪</string>
+    <string name="workbench_flash_auto">闪光 自动</string>
+    <string name="workbench_flash_off">闪光 关</string>
+    <string name="workbench_flash_on">闪光 开</string>
+    <string name="workbench_render_note">确认照片后生成真实胶片效果</string>
+    <string name="workbench_photo_desc">工作台中的当前照片</string>
+    <string name="workbench_no_photo">选择照片或 RAW 文件开始</string>
+    <string name="workbench_return">返回拍摄工作台</string>
 </resources>

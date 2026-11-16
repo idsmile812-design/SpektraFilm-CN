@@ -1,5 +1,17 @@
 # Changelog
 
+## 光谱胶片 CN 0.12.0 (versionCode 14) — 2026-11-16 — 单页拍摄工作台
+
+- 默认打开原创单页工作台，将 CameraX 取景、胶片暗盒、曝光／颗粒／光晕刻度、镜头与闪光控制、快门放在同一页。
+- 相机模式浏览胶片和调整参数只保存待拍配置，不触发主图渲染；确认照片后才应用所选预设与参数。取景器不叠加模拟滤镜。
+- 照片模式保留明确的选片与调整渲染；专业暗房保留 RAW、曲线、蒙版与事务导出，并可返回工作台。
+- 大字体下参数改为纵向排列，整页可滚动；中英文引导与操作文案同步更新。
+- 使用项目维护者提供的角色图片制作应用图标。
+- 新增工作台配置持久化与参数边界测试。695 项 JVM 单测、Lint、三 ABI Debug 构建通过；Android 15 模拟器完成取景、拍照、确认、暗房往返、大字体与 JPEG 导出验证。
+- 本测试包使用 Android Debug 证书签名。鸿蒙 4.2 与不同手机 GPU 仍需真机验证。
+
+Film modeling powered by [spektrafilm](https://github.com/andreavolpato/spektrafilm); Android foundation by [Spektrafilm for Android](https://github.com/thetechgeekko/Spektrafilm-android). Licensed under GPLv3.
+
 ## v0.10.0 (versionCode 12) — 2026-09-12 — the GPU is how the app renders, accurate presets, a fixed canvas 🎞️⚡
 
 **Minor, not patch: the default render route changed for every user.**

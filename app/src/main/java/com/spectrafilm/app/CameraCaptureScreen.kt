@@ -56,6 +56,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -253,7 +254,7 @@ internal fun CameraCaptureScreen(
 }
 
 @Composable
-private fun PermissionExplanation(
+internal fun PermissionExplanation(
     denied: Boolean,
     onAllow: () -> Unit,
     onOpenSettings: () -> Unit,
@@ -312,7 +313,7 @@ private fun PermissionExplanation(
 }
 
 @Composable
-private fun CameraMessage(body: String, onOpenPhotoPicker: () -> Unit) {
+internal fun CameraMessage(body: String, onOpenPhotoPicker: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -328,6 +329,86 @@ private fun CameraMessage(body: String, onOpenPhotoPicker: () -> Unit) {
     }
 }
 
+internal data class CameraPreviewStatus(
+    val imageCapture: ImageCapture? = null,
+    val ready: Boolean = false,
+    val canFlip: Boolean = false,
+    val failed: Boolean = false,
+)
+
+@Composable
+internal fun CameraPreview(
+    context: android.content.Context,
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    lensFacing: Int,
+    onStatus: (CameraPreviewStatus) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val currentOnStatus by rememberUpdatedState(onStatus)
+    var currentCapture by remember { mutableStateOf<ImageCapture?>(null) }
+    val previewView = remember(context) {
+        PreviewView(context).apply {
+            implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+            scaleType = PreviewView.ScaleType.FILL_CENTER
+        }
+    }
+    DisposableEffect(lensFacing, lifecycleOwner) {
+        var disposed = false
+        var provider: ProcessCameraProvider? = null
+        fun publish(status: CameraPreviewStatus) {
+            currentCapture = status.imageCapture
+            currentOnStatus(status)
+        }
+        publish(CameraPreviewStatus())
+        val future = ProcessCameraProvider.getInstance(context)
+        future.addListener(
+            {
+                if (disposed) return@addListener
+                try {
+                    provider = future.get()
+                    val preview = Preview.Builder().build().also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    }
+                    val capture = ImageCapture.Builder()
+                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setTargetRotation(previewView.display?.rotation ?: Surface.ROTATION_0)
+                        .build()
+                    val selector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+                    provider?.unbindAll()
+                    provider?.bindToLifecycle(lifecycleOwner, selector, preview, capture)
+                    val canFlip = runCatching {
+                        provider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) == true
+                    }.getOrDefault(false)
+                    publish(CameraPreviewStatus(capture, ready = true, canFlip = canFlip))
+                } catch (_: Exception) {
+                    publish(CameraPreviewStatus(failed = true))
+                }
+            },
+            ContextCompat.getMainExecutor(context),
+        )
+        onDispose {
+            disposed = true
+            publish(CameraPreviewStatus())
+            future.cancel(true)
+            provider?.unbindAll()
+        }
+    }
+
+    Box(modifier) {
+        AndroidView(
+            factory = { previewView },
+            update = { view ->
+                currentCapture?.targetRotation = view.display?.rotation ?: Surface.ROTATION_0
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .semantics {
+                    contentDescription = context.getString(R.string.camera_preview_desc)
+                },
+        )
+    }
+}
+
 @Composable
 private fun CameraViewfinder(
     context: android.content.Context,
@@ -340,71 +421,24 @@ private fun CameraViewfinder(
     generation: () -> Int,
     onCaptured: (File, Int) -> Unit,
 ) {
-    val previewView = remember(context) {
-        PreviewView(context).apply {
-            scaleType = PreviewView.ScaleType.FIT_CENTER
-        }
-    }
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var ready by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
     var lensFacing by rememberSaveable { mutableIntStateOf(CameraSelector.LENS_FACING_BACK) }
     var canFlip by remember { mutableStateOf(false) }
 
-    DisposableEffect(lensFacing, lifecycleOwner) {
-        var disposed = false
-        var provider: ProcessCameraProvider? = null
-        ready = false
-        failed = false
-        imageCapture = null
-        val future = ProcessCameraProvider.getInstance(context)
-        future.addListener(
-            {
-                if (disposed) return@addListener
-                try {
-                    provider = future.get()
-                    val view = Preview.Builder().build().also {
-                        it.setSurfaceProvider(previewView.surfaceProvider)
-                    }
-                    val capture = ImageCapture.Builder()
-                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                        .setTargetRotation(previewView.display?.rotation ?: Surface.ROTATION_0)
-                        .build()
-                    val selector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-                    provider?.unbindAll()
-                    provider?.bindToLifecycle(lifecycleOwner, selector, view, capture)
-                    imageCapture = capture
-                    canFlip = runCatching {
-                        provider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) == true
-                    }.getOrDefault(false)
-                    ready = true
-                } catch (_: Exception) {
-                    failed = true
-                    ready = false
-                }
-            },
-            ContextCompat.getMainExecutor(context),
-        )
-        onDispose {
-            disposed = true
-            imageCapture = null
-            ready = false
-            future.cancel(true)
-            provider?.unbindAll()
-        }
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = { previewView },
-            update = { view ->
-                imageCapture?.targetRotation = view.display?.rotation ?: Surface.ROTATION_0
+        CameraPreview(
+            context = context,
+            lifecycleOwner = lifecycleOwner,
+            lensFacing = lensFacing,
+            onStatus = { status ->
+                imageCapture = status.imageCapture
+                ready = status.ready
+                canFlip = status.canFlip
+                failed = status.failed
             },
-            modifier = Modifier
-                .fillMaxSize()
-                .semantics {
-                    contentDescription = context.getString(R.string.camera_preview_desc)
-                },
+            modifier = Modifier.fillMaxSize(),
         )
         when {
             failed -> Text(
@@ -503,7 +537,7 @@ private fun CameraViewfinder(
 }
 
 @Composable
-private fun CaptureConfirmation(
+internal fun CaptureConfirmation(
     file: File,
     store: CaptureFileStore,
     errorMessage: String?,

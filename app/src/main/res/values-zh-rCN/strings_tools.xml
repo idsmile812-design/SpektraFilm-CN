@@ -141,14 +141,14 @@
 
     <!-- Editor coach marks -->
     <string name="tool_coach_title">快速提示</string>
-    <string name="tool_coach_category_title">选择一个阶段</string>
-    <string name="tool_coach_category_body">风格、胶片、印相、扫描、完成——照片会经历这些阶段。轻点一个阶段打开它的控件。</string>
+    <string name="tool_coach_category_title">在同一页拍摄</string>
+    <string name="tool_coach_category_body">选择胶片、调整曝光/颗粒/光晕，然后直接拍摄或导入，不需要逐个打开阶段抽屉。</string>
     <string name="tool_coach_compare_title">原图对比</string>
-    <string name="tool_coach_compare_body">切换对比分割线，将编辑效果与原图比较。</string>
+    <string name="tool_coach_compare_body">进入专业暗房，即可将胶片效果与原图比较。</string>
     <string name="tool_coach_inspect_title" formatted="false">以 100% 检查</string>
-    <string name="tool_coach_inspect_body">轻点预览下方工具条中的放大镜按钮，以全分辨率检查颗粒和细节。</string>
+    <string name="tool_coach_inspect_body">在专业暗房中，使用预览下方的放大镜检查全分辨率颗粒和细节。</string>
     <string name="tool_coach_zoom_title">双指缩放</string>
-    <string name="tool_coach_zoom_body">双指捏合并拖动预览，可检查任意区域。</string>
+    <string name="tool_coach_zoom_body">在专业暗房中，双指捏合并拖动预览，即可检查任意区域。</string>
     <string name="tool_coach_got_it">知道了</string>
     <string name="tool_coach_dismiss">关闭提示</string>
 

@@ -22,14 +22,14 @@
     <string name="screen_welcome_page1_title">手机里的光谱暗房</string>
     <string name="screen_welcome_page1_body">光谱胶片会通过物理建模的胶片和暗房相纸流程来渲染照片——它基于光谱计算，而不是预设滤镜。</string>
     <string name="screen_welcome_steps">三步完成一张照片</string>
-    <string name="screen_welcome_step1_title">导入照片</string>
-    <string name="screen_welcome_step1_body">从相册或文件选择器打开 JPEG、HEIC 或 RAW/DNG。</string>
-    <string name="screen_welcome_step2_title">选择风格</string>
-    <string name="screen_welcome_step2_body">先选一个内置风格，再决定是否更换胶片和相纸。</string>
-    <string name="screen_welcome_step3_title">微调并保存</string>
-    <string name="screen_welcome_step3_body">调整强度、曝光与颗粒，然后以完整分辨率保存到相册。</string>
+    <string name="screen_welcome_step1_title">拍摄或导入</string>
+    <string name="screen_welcome_step1_body">直接打开相机拍摄，或从设备选择 JPEG、HEIC、RAW/DNG。</string>
+    <string name="screen_welcome_step2_title">选择胶片并微调</string>
+    <string name="screen_welcome_step2_body">在同一页横滑选胶片，调整曝光、颗粒和光晕，不需要逐个打开抽屉。</string>
+    <string name="screen_welcome_step3_title">确认、渲染并保存</string>
+    <string name="screen_welcome_step3_body">确认照片后生成胶片效果，再进入专业暗房微调，或以完整分辨率保存。</string>
     <string name="screen_welcome_privacy">解码、胶片模拟和导出全部在这台手机上完成。照片不会上传，也无需账号。</string>
-    <string name="screen_welcome_get_started">开始编辑</string>
+    <string name="screen_welcome_get_started">打开相机</string>
     <string name="screen_welcome_open_settings">设置</string>
 
     <!-- About -->

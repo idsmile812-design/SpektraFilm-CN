@@ -19,14 +19,14 @@
     <string name="screen_welcome_page1_title">A spectral darkroom on your phone</string>
     <string name="screen_welcome_page1_body">Spektrafilm renders your photos through a physically-modelled film stock and darkroom print — spectrum-accurate, not a preset filter.</string>
     <string name="screen_welcome_steps">Three steps to a finished photograph</string>
-    <string name="screen_welcome_step1_title">Import a photo</string>
-    <string name="screen_welcome_step1_body">Open a JPEG, HEIC or RAW/DNG from your gallery or the file picker.</string>
-    <string name="screen_welcome_step2_title">Choose a look</string>
-    <string name="screen_welcome_step2_body">Start from a preset, then keep or change the film stock and print paper.</string>
-    <string name="screen_welcome_step3_title">Fine-tune and save</string>
-    <string name="screen_welcome_step3_body">Adjust strength, exposure and grain, then save at full resolution to your gallery.</string>
+    <string name="screen_welcome_step1_title">Shoot or import</string>
+    <string name="screen_welcome_step1_body">Open the camera for a new photo, or choose JPEG, HEIC or RAW/DNG from your device.</string>
+    <string name="screen_welcome_step2_title">Choose film and tune</string>
+    <string name="screen_welcome_step2_body">Swipe between films and adjust exposure, grain and halation on the same page—no drawers.</string>
+    <string name="screen_welcome_step3_title">Confirm, render and save</string>
+    <string name="screen_welcome_step3_body">Confirm a photo to make its film render, then open the professional darkroom or save at full resolution.</string>
     <string name="screen_welcome_privacy">Decoding, film simulation and export all run on this phone. Photos are never uploaded and no account is needed.</string>
-    <string name="screen_welcome_get_started">Start editing</string>
+    <string name="screen_welcome_get_started">Open the camera</string>
     <string name="screen_welcome_open_settings">Settings</string>
 
     <!-- About -->

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#14201D">
-  <meta name="description" content="光谱胶片 SpektraFilm CN：开源、离线的 Android 光谱胶片模拟。下载 0.11.0 测试版。">
+  <meta name="description" content="光谱胶片 SpektraFilm CN：开源、离线的 Android 光谱胶片模拟。下载 0.12.0 单页拍摄工作台测试版。">
   <title>光谱胶片 SpektraFilm CN — 让一束光，重新经过胶片</title>
   <link rel="stylesheet" href="site/style.css">
 </head>
@@ -28,48 +28,48 @@
       <div class="hero-copy">
         <p class="eyebrow">OPEN SOURCE · ANDROID 7.0+</p>
         <h1 id="hero-title">让一束光，<br><em>重新经过胶片。</em></h1>
-        <p class="hero-intro">不是给照片蒙上一层滤镜，而是让光谱穿过负片、放大机、相纸与扫描仪。选风格、拍照、调整、导出，都在你的手机上离线完成。</p>
+        <p class="hero-intro">不是给照片蒙上一层滤镜，而是让光谱穿过负片、放大机、相纸与扫描仪。取景、选卷、调整与拍摄在同一页完成，所有处理都在你的手机上离线进行。</p>
         <div class="actions">
-          <a class="button button-primary" href="https://github.com/idsmile812-design/SpektraFilm-CN/releases/download/cn-v0.11.0-test/SpektraFilm-CN-live-gallery.apk">
-            <span>下载 Android 测试版</span><small>APK · 38.8 MB</small>
+          <a class="button button-primary" href="https://github.com/idsmile812-design/SpektraFilm-CN/releases/download/cn-v0.12.0-test/SpektraFilm-CN-workbench.apk">
+            <span>下载 Android 测试版</span><small>APK · 41.4 MB</small>
           </a>
           <a class="button button-secondary" href="https://github.com/idsmile812-design/SpektraFilm-CN">查看源码</a>
         </div>
-        <p class="release-line"><span>v0.11.0 (13)</span><span>测试证书签名</span><span>无 INTERNET 权限</span></p>
+        <p class="release-line"><span>v0.12.0 (14)</span><span>测试证书签名</span><span>无 INTERNET 权限</span></p>
       </div>
 
       <figure class="film-figure">
         <div class="film-strip">
-          <div class="film-leader" aria-hidden="true">SPEKTRA · 0.11</div>
-          <img src="site/app-gallery.png" width="1080" height="2400" alt="光谱胶片真实应用画面：当前灯影照片经过多款内置预设后形成风格缩略图，右下角保留部分原版胶片包装">
+          <div class="film-leader" aria-hidden="true">SPEKTRA · 0.12</div>
+          <img src="site/app-gallery.png" width="1080" height="2400" alt="光谱胶片真实应用画面：单页拍摄工作台显示相机取景、刻度参数、快门和横向胶片暗盒">
           <div class="film-tail" aria-hidden="true">光谱胶片 · 接触印样</div>
         </div>
-        <figcaption><span>当前照片 × 真实预设</span><span>实测画面 / ANDROID 15</span></figcaption>
+        <figcaption><span>真实取景 × 单页工作台</span><span>实测画面 / ANDROID 15</span></figcaption>
       </figure>
     </section>
 
     <section class="proof-line" aria-label="构建验证摘要">
-      <div><strong>690</strong><span>项单测通过</span></div>
+      <div><strong>695</strong><span>项单测通过</span></div>
       <div><strong>3</strong><span>种 Android ABI</span></div>
       <div><strong>0</strong><span>项 INTERNET 权限</span></div>
-      <div><strong>2</strong><span>种实际导出格式已检查</span></div>
+      <div><strong>1</strong><span>页完成选卷与拍摄</span></div>
     </section>
 
     <section class="content-section" id="features" aria-labelledby="features-title">
       <p class="section-label">这一版带来的改变</p>
-      <h2 id="features-title">先看见效果，再决定用哪卷胶片。</h2>
+      <h2 id="features-title">不必进出抽屉，拍摄所需都在眼前。</h2>
       <div class="feature-grid">
         <article>
-          <h3>当前照片，就是选片样张</h3>
-          <p>每款内置预设都用你的照片真实渲染。包装图帮助认识胶片，缩略图帮助你判断这束光、这面墙、这朵花最终会是什么样子。</p>
+          <h3>取景、选卷、调整，同页完成</h3>
+          <p>CameraX 取景器、胶片暗盒、曝光／颗粒／光晕刻度、镜头与闪光控制、胶片门式快门组成一张工作台，大字体下也能滚动使用。</p>
         </article>
         <article>
-          <h3>保存之前，先核对画面</h3>
-          <p>JPEG 和 PNG 先编码到私有临时文件，再与本次渲染比较。异常时仅重编码一次；仍不合格就不写入相册，也不进入缓存。</p>
+          <h3>先决定，再让胶片开始工作</h3>
+          <p>相机模式浏览胶片和调整参数只更新待拍配置，不触发主图渲染；取景器不叠加虚假滤镜。确认照片后，才应用所选胶片与参数。</p>
         </article>
         <article>
-          <h3>出了问题，也不必连接电脑</h3>
-          <p>Java 与 native 崩溃记录保存在应用内。诊断页可以复制或主动分享，记录定期清理，不会自动上传，没有账号和遥测。</p>
+          <h3>简单拍摄之外，暗房仍然完整</h3>
+          <p>从工作台可以进入专业暗房，继续使用 RAW、曲线、蒙版与事务导出。Java 与 native 诊断记录仅保存在本地，可主动复制或分享。</p>
         </article>
       </div>
     </section>
@@ -77,21 +77,21 @@
     <section class="download-section" id="download" aria-labelledby="download-title">
       <div class="download-copy">
         <p class="section-label">下载与安装</p>
-        <h2 id="download-title">光谱胶片 0.11.0</h2>
+        <h2 id="download-title">光谱胶片 0.12.0</h2>
         <p>这是供实际体验与反馈的测试版本，不是应用商店正式上架版。安装前请阅读下面的兼容性说明。</p>
-        <a class="button button-primary" href="https://github.com/idsmile812-design/SpektraFilm-CN/releases/download/cn-v0.11.0-test/SpektraFilm-CN-live-gallery.apk">下载 SpektraFilm-CN-live-gallery.apk</a>
-        <a class="release-link" href="https://github.com/idsmile812-design/SpektraFilm-CN/releases/tag/cn-v0.11.0-test">查看 Release 与 SHA256SUMS</a>
+        <a class="button button-primary" href="https://github.com/idsmile812-design/SpektraFilm-CN/releases/download/cn-v0.12.0-test/SpektraFilm-CN-workbench.apk">下载 SpektraFilm-CN-workbench.apk</a>
+        <a class="release-link" href="https://github.com/idsmile812-design/SpektraFilm-CN/releases/tag/cn-v0.12.0-test">查看 Release 与 SHA256SUMS</a>
       </div>
       <dl class="metadata">
-        <div><dt>版本</dt><dd>0.11.0 (13) · cn-v0.11.0-test</dd></div>
+        <div><dt>版本</dt><dd>0.12.0 (14) · cn-v0.12.0-test</dd></div>
         <div><dt>系统</dt><dd>Android 7.0 及以上</dd></div>
         <div><dt>架构</dt><dd>arm64-v8a · armeabi-v7a · x86_64</dd></div>
-        <div><dt>大小</dt><dd>38,846,711 字节</dd></div>
+        <div><dt>大小</dt><dd>41,449,329 字节</dd></div>
         <div><dt>权限</dt><dd>无 INTERNET；拍照需单独授权相机</dd></div>
       </dl>
       <div class="hash-block">
-        <div class="hash-heading"><h3>APK SHA-256</h3><button id="copy-hash" type="button" data-hash="c55fae2a2c1e4252c06b67f5bd5406d8ab375e33abcd8f06f753f44b05b555d3">复制哈希</button></div>
-        <code id="apk-hash">c55fae2a2c1e4252c06b67f5bd5406d8ab375e33abcd8f06f753f44b05b555d3</code>
+        <div class="hash-heading"><h3>APK SHA-256</h3><button id="copy-hash" type="button" data-hash="55f0aba13f55f52ed9297b2398a7a5c7ad64278ccfee47847ea28f361541c94d">复制哈希</button></div>
+        <code id="apk-hash">55f0aba13f55f52ed9297b2398a7a5c7ad64278ccfee47847ea28f361541c94d</code>
         <p id="copy-status" role="status" aria-live="polite"></p>
       </div>
     </section>
@@ -103,11 +103,11 @@
         <article>
           <h3>已完成</h3>
           <ul>
-            <li>690 项 JVM 单测、Lint、三种 ABI 的 Debug 构建</li>
-            <li>独立 Android 15 模拟器中的图鉴、预设与中文界面</li>
-            <li>JPEG / PNG 导出及相册成品读取</li>
-            <li>独立子进程中的真实 SIGSEGV 记录测试</li>
-            <li>APK v2 签名与 16 KB 对齐检查</li>
+            <li>695 项 JVM 单测、Lint、三种 ABI 的 Debug 构建</li>
+            <li>Android 15 模拟器中的相机授权、真实取景、拍照与页内确认</li>
+            <li>选卷不渲染、照片模式、专业暗房往返与大字体布局</li>
+            <li>JPEG 导出、成品读取、0.12.0 最终包安装与启动</li>
+            <li>APK v2 签名、16 KB 对齐与无 INTERNET 权限检查</li>
           </ul>
         </article>
         <article>
@@ -122,7 +122,7 @@
       </div>
       <ol class="install-steps">
         <li>下载 APK，在系统提示中允许此次来源安装。</li>
-        <li>打开“光谱胶片”，导入照片，或直接选择应用内拍照。</li>
+        <li>打开“光谱胶片”，在同一张工作台选卷、拍照，或切换到照片模式。</li>
         <li>若出现异常，从设置进入诊断页，复制或主动分享记录。</li>
       </ol>
     </section>

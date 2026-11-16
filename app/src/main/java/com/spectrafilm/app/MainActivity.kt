@@ -1466,7 +1466,17 @@ class MainActivity : ComponentActivity() {
             )
         }
         var showSourcePicker by remember { mutableStateOf(false) }
-        var cameraOpen by rememberSaveable { mutableStateOf(false) }
+        var workbenchActive by rememberSaveable { mutableStateOf(true) }
+        var cameraOpen by rememberSaveable {
+            mutableStateOf(restoredSource.kind == SourceKind.DEMO)
+        }
+        var workbenchSelection by remember {
+            mutableStateOf(WorkbenchSelection.fromJson(settings.workbenchSelectionJson))
+        }
+        LaunchedEffect(workbenchSelection) {
+            delay(250)
+            settings.workbenchSelectionJson = workbenchSelection.toJson().toString()
+        }
         var exportOptions by remember {
             mutableStateOf(
                 initialExportState.options,
@@ -2454,12 +2464,49 @@ class MainActivity : ComponentActivity() {
             previewTick++
         }
 
+        fun applyBuiltIn(preset: BuiltInPreset, announce: Boolean = true) {
+            val now = runCatching { Presets.toJsonString(state) }.getOrNull()
+            val baseline = presetRunBaseline(
+                now = now,
+                lastOutput = lastBuiltInOutput.ifEmpty { null },
+                runBaseline = presetBaselineJson,
+            )
+            presetBaselineJson = baseline
+            applyWithAmount(baseline) {
+                if (baseline != null && baseline != now) {
+                    runCatching {
+                        Presets.decode(org.json.JSONObject(baseline), state)
+                    }
+                }
+                BuiltInPresets.apply(preset, state)
+            }
+            lastBuiltInOutput = runCatching { Presets.toJsonString(state) }.getOrNull().orEmpty()
+            appliedBuiltInId = preset.id
+            if (announce) {
+                announceStatus(
+                    uiContext.getString(
+                        R.string.editor_status_applied_builtin,
+                        BuiltInPresets.displayName(uiContext, preset),
+                    ),
+                )
+            }
+            previewTick++
+        }
+
+        fun applyWorkbenchSelection(selection: WorkbenchSelection) {
+            val preset = builtInGroups.values.flatten().firstOrNull { it.id == selection.presetId }
+                ?: return
+            applyBuiltIn(preset, announce = false)
+            selection.applyAdjustments(state)
+        }
+
         fun adoptSource(
             uri: Uri,
             kind: SourceKind,
             displayName: String,
             readyStatus: String,
             probeLabel: String? = null,
+            afterApplied: (() -> Unit)? = null,
         ) {
             val selectionGeneration = sourceMutationGate.begin()
             // The mutation starts in the process-owned runtime before this Activity awaits it.
@@ -2492,12 +2539,16 @@ class MainActivity : ComponentActivity() {
                         } else {
                             uiContext.getString(R.string.editor_status_access_temporary, readyStatus)
                         }
-                        // Only a NEW photograph opens the look picker; re-authorizing or
-                        // restoring the same source leaves the current panel alone.
-                        categoryAfterSourceImport(switched, kind)?.let {
-                            presetGalleryMode = true
-                            activeCategory = it
+                        // Only a NEW photograph opens the look picker; the workbench keeps
+                        // its own film selection on the same page instead of opening a drawer.
+                        if (!workbenchActive) {
+                            categoryAfterSourceImport(switched, kind)?.let {
+                                presetGalleryMode = true
+                                activeCategory = it
+                            }
                         }
+                        runCatching { afterApplied?.invoke() }
+                            .onFailure { Diag.w("workbench selection apply failed: ${it.message}") }
                         previewTick++
                         probeLabel?.let(Ticket139EditorProbe::publishProbeSource)
                     }
@@ -2543,6 +2594,16 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        fun workbenchConfiguration(): (() -> Unit)? {
+            if (!workbenchActive) return null
+            val selection = workbenchSelection
+            return {
+                cameraOpen = false
+                activeCategory = null
+                applyWorkbenchSelection(selection)
+            }
+        }
+
         // --- source pickers ---
         val photoPicker = rememberLauncherForActivityResult(
             ActivityResultContracts.PickVisualMedia()
@@ -2550,7 +2611,13 @@ class MainActivity : ComponentActivity() {
             if (uri != null) {
                 val displayName = uri.lastPathSegment?.substringAfterLast('/')
                     ?.takeIf { it.isNotBlank() } ?: uiContext.getString(R.string.editor_source_picked_photo_name)
-                adoptSource(uri, SourceKind.PHOTO, displayName, uiContext.getString(R.string.editor_status_photo_selected))
+                adoptSource(
+                    uri,
+                    SourceKind.PHOTO,
+                    displayName,
+                    uiContext.getString(R.string.editor_status_photo_selected),
+                    afterApplied = workbenchConfiguration(),
+                )
             }
         }
         // Shared dispatch for the document picker AND #162 inbound VIEW/SEND: one routing
@@ -2589,6 +2656,7 @@ class MainActivity : ComponentActivity() {
                     SourceKind.PHOTO,
                     name.substringAfterLast('/'),
                     uiContext.getString(R.string.editor_status_photo_selected),
+                    afterApplied = workbenchConfiguration(),
                 )
                 // RAW/DNG, and every ambiguous content URI (e.g. MIUI document IDs with no
                 // extension), so a genuine DNG is never misrouted.
@@ -2597,6 +2665,7 @@ class MainActivity : ComponentActivity() {
                     SourceKind.RAW,
                     uiContext.getString(R.string.editor_source_raw_name, name.substringAfterLast('/')),
                     uiContext.getString(R.string.editor_status_raw_selected),
+                    afterApplied = workbenchConfiguration(),
                 )
             }
         }
@@ -3110,7 +3179,7 @@ class MainActivity : ComponentActivity() {
         // Honest scope: this was written while chasing a cold-start hang and did NOT fix it.
         // It closes a real race that is simply not the one observed there.
         LaunchedEffect(previewTick, sourceRenderAllowed, engine) {
-                if (!sourceRenderAllowed) return@LaunchedEffect
+                if (!sourceRenderAllowed || (workbenchActive && cameraOpen)) return@LaunchedEffect
                 val publicationTicket = publicationGate.begin(
                     previewRevision,
                     RenderPublicationPriority.DRAFT,
@@ -3227,7 +3296,7 @@ class MainActivity : ComponentActivity() {
         // Keyed on engine for the same reason as the draft effect above: without it a cold
         // start that composes before the native engine is ready never renders at all.
         LaunchedEffect(previewTick, sourceRenderAllowed, engine) {
-            if (!sourceRenderAllowed) return@LaunchedEffect
+            if (!sourceRenderAllowed || (workbenchActive && cameraOpen)) return@LaunchedEffect
             val e = engine ?: return@LaunchedEffect
             val previewProbeLabel = Ticket139EditorProbe.sourceProbeLabel(sourceUri?.toString())
             // Settle debounce, raised from 350ms. Each preview render maxes all CPU cores for
@@ -3825,33 +3894,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        fun applyBuiltIn(preset: BuiltInPreset) {
-            val now = runCatching { Presets.toJsonString(state) }.getOrNull()
-            val baseline = presetRunBaseline(
-                now = now,
-                lastOutput = lastBuiltInOutput.ifEmpty { null },
-                runBaseline = presetBaselineJson,
-            )
-            presetBaselineJson = baseline
-            applyWithAmount(baseline) {
-                if (baseline != null && baseline != now) {
-                    runCatching {
-                        Presets.decode(org.json.JSONObject(baseline), state)
-                    }
-                }
-                BuiltInPresets.apply(preset, state)
-            }
-            lastBuiltInOutput = runCatching { Presets.toJsonString(state) }.getOrNull().orEmpty()
-            appliedBuiltInId = preset.id
-            announceStatus(
-                uiContext.getString(
-                    R.string.editor_status_applied_builtin,
-                    BuiltInPresets.displayName(uiContext, preset),
-                ),
-            )
-            previewTick++
-        }
-
         fun changePresetAmount(value: Float) {
             presetAmount = value
             val base = presetBaseJson
@@ -3940,7 +3982,7 @@ class MainActivity : ComponentActivity() {
         // chrome beneath would otherwise stay reachable by TalkBack explore-by-touch. The export
         // mask is a self-drawn full-screen overlay (not a platform Dialog), so it belongs here
         // too: while it is up, the editor below must not remain an accessibility target.
-        val galleryShown = activeCategory == Category.PRESETS && presetGalleryMode
+        val galleryShown = !workbenchActive && activeCategory == Category.PRESETS && presetGalleryMode
         LaunchedEffect(
             galleryShown,
             preview != null,
@@ -3983,7 +4025,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         val modalOverlayShown =
-            cameraOpen || galleryShown || magnifierOpen || cropShown || maskGeometryShown || sampleReady || exportMaskVisible
+            workbenchActive || cameraOpen || galleryShown || magnifierOpen || cropShown || maskGeometryShown || sampleReady || exportMaskVisible
         Box(
             Modifier
                 .fillMaxSize()
@@ -4341,7 +4383,10 @@ class MainActivity : ComponentActivity() {
                                 hasRecipe = hasRecipe,
                                 needsAuthorization = sourceAuthorizationRequired,
                                 capturedSource = sourceUri?.authority == "${uiContext.packageName}.files",
-                                onRetakePhoto = { cameraOpen = true },
+                                onRetakePhoto = {
+                                    workbenchActive = true
+                                    cameraOpen = true
+                                },
                                 onReauthorize = {
                                     if (sourceKind == SourceKind.RAW) {
                                         rawPicker.launch(arrayOf("*/*"))
@@ -4620,6 +4665,20 @@ class MainActivity : ComponentActivity() {
                         TextButton(
                             onClick = {
                                 showSourcePicker = false
+                                workbenchActive = true
+                                cameraOpen = sourceKind == SourceKind.DEMO
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 48.dp),
+                        ) {
+                            ButtonIcon(SpectraIcons.Camera)
+                            Text(stringResource(R.string.workbench_return))
+                        }
+                        TextButton(
+                            onClick = {
+                                showSourcePicker = false
+                                workbenchActive = true
                                 cameraOpen = true
                             },
                             enabled = !exportInFlight,
@@ -4660,7 +4719,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            if (cameraOpen) {
+            if (cameraOpen && !workbenchActive) {
                 CameraCaptureScreen(
                     onUsePhoto = { uri ->
                         cameraOpen = false
@@ -5408,6 +5467,51 @@ class MainActivity : ComponentActivity() {
                                 checkpointEditorSession()
                             }
                         }
+                    },
+                )
+            }
+
+            if (workbenchActive) {
+                WorkbenchScreen(
+                    selection = workbenchSelection,
+                    onSelectionChange = { updated ->
+                        val previous = workbenchSelection
+                        workbenchSelection = updated
+                        if (!cameraOpen && sourceKind != SourceKind.DEMO &&
+                            updated.presetId == previous.presetId
+                        ) {
+                            applyWorkbenchSelection(updated)
+                        }
+                    },
+                    presets = builtInGroups.values.flatten(),
+                    preview = preview,
+                    photoMode = !cameraOpen && sourceKind != SourceKind.DEMO,
+                    onApplyPreset = { preset ->
+                        val updated = workbenchSelection.copy(presetId = preset.id)
+                        workbenchSelection = updated
+                        applyWorkbenchSelection(updated)
+                    },
+                    onOpenPhotoPicker = {
+                        photoPicker.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    onOpenRawPicker = { rawPicker.launch(arrayOf("*/*")) },
+                    onOpenDarkroom = {
+                        workbenchActive = false
+                        cameraOpen = false
+                        activeCategory = null
+                    },
+                    onUsePhoto = { uri, selection ->
+                        cameraOpen = false
+                        activeCategory = null
+                        adoptSource(
+                            uri = uri,
+                            kind = SourceKind.PHOTO,
+                            displayName = uiContext.getString(R.string.camera_capture_name),
+                            readyStatus = uiContext.getString(R.string.editor_status_photo_selected),
+                            afterApplied = { applyWorkbenchSelection(selection) },
+                        )
                     },
                 )
             }

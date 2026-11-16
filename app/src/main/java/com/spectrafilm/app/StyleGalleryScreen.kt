@@ -412,7 +412,7 @@ private fun PresetVisual(
 }
 
 @Composable
-private fun PackagingVisual(
+internal fun PackagingVisual(
     entry: PackagingEntry?,
     modelName: String,
     modifier: Modifier = Modifier,

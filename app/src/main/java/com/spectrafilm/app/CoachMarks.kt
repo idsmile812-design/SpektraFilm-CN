@@ -2,11 +2,10 @@
  * Spektrafilm for Android — editor coach marks. GPLv3.
  * Film modeling powered by spektrafilm.
  *
- * A one-time, dismissible overlay shown the first time the editor is opened (after
- * onboarding). It surfaces the non-obvious affordances — stage + parameter tabs,
- * before/after compare, the magnifier below the preview, pinch-zoom — the way
- * Lightroom's coach marks do, so the gesture-driven editor is discoverable without a
- * manual. Gated by AppSettings.seenEditorCoach; shown exactly once.
+ * A one-time, dismissible overlay shown the first time the workbench is opened (after
+ * onboarding). It introduces same-page film/capture controls and points to the professional
+ * darkroom for comparison, magnification and pinch-zoom. Gated by AppSettings.seenEditorCoach;
+ * shown exactly once.
  */
 package com.spectrafilm.app
 

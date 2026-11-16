@@ -252,6 +252,10 @@ class AppSettings private constructor(private val prefs: SharedPreferences) {
         get() = prefs.getBoolean(KEY_EXPORT_KEEP_GPS, ExportDefaults.KEEP_GPS)
         set(v) { prefs.edit().putBoolean(KEY_EXPORT_KEEP_GPS, v).apply() }
 
+    var workbenchSelectionJson: String
+        get() = prefs.getString(KEY_WORKBENCH_SELECTION, "") ?: ""
+        set(v) { prefs.edit().putString(KEY_WORKBENCH_SELECTION, v).apply() }
+
     /**
      * Seed a freshly constructed [state] with the saved app defaults. Profile defaults
      * are only applied when they appear in [availableProfiles] (so a stale id can't make
@@ -293,6 +297,7 @@ class AppSettings private constructor(private val prefs: SharedPreferences) {
         private const val KEY_EXPORT_FMT = "export_format"
         private const val KEY_EXPORT_Q = "export_quality"
         private const val KEY_EXPORT_KEEP_GPS = "export_keep_gps"
+        private const val KEY_WORKBENCH_SELECTION = "workbench_selection_v1"
 
         @Volatile private var instance: AppSettings? = null
 

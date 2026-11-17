@@ -11,26 +11,45 @@ import org.junit.Test
 
 class PackagingCatalogTest {
     @Test
-    fun bundledEntriesHaveRealStockIdsReadableImagesAndCompleteProvenance() {
+    fun bundledEntriesHaveRealStockIdsReadableIllustrationsAndCompleteRepositoryProvenance() {
         val entries = PackagingCatalog.parse(repoFile("app/src/main/assets/packaging/catalog.json").readText())
         assertEquals(3, entries.size)
         val stocks = JSONObject(
             repoFile("engine/spektra-core/src/main/assets/spektra/catalog.json").readText(),
         ).getJSONObject("stocks")
+        val repo = "https://github.com/idsmile812-design/SpektraFilm-CN"
+        assertEquals(
+            setOf("kodak_portra_160", "kodak_portra_400", "kodak_portra_800"),
+            entries.map { it.stockId }.toSet(),
+        )
 
         for (entry in entries) {
             assertTrue(entry.stockId, stocks.has(entry.stockId))
-            assertTrue(entry.sourcePage.startsWith("https://commons.wikimedia.org/wiki/File:"))
-            assertTrue(entry.sourceFile.startsWith("https://upload.wikimedia.org/"))
-            assertTrue(entry.author.isNotBlank())
-            assertTrue(entry.license.isNotBlank())
-            assertTrue(entry.licenseUrl.startsWith("https://"))
-            val image = ImageIO.read(repoFile("app/src/main/assets/${entry.asset}"))
-            assertTrue("${entry.stockId} must be a readable JPEG", image != null && image.width > 0)
+            assertEquals("SpektraFilm CN contributors", entry.author)
+            assertEquals(2026, entry.year)
+            assertEquals("GPL-3.0-only", entry.license)
+            assertEquals("$repo/blob/main/LICENSE", entry.licenseUrl)
+            assertEquals(PackagingMediaType.BOX, entry.mediaType)
+            assertTrue(entry.asset, entry.asset.endsWith("_illustration.jpg"))
+            assertEquals(
+                "$repo/blob/main/app/src/main/assets/${entry.asset}",
+                entry.sourcePage,
+            )
+            assertEquals(
+                "https://raw.githubusercontent.com/idsmile812-design/SpektraFilm-CN/main/" +
+                    "app/src/main/assets/${entry.asset}",
+                entry.sourceFile,
+            )
+            assertTrue(entry.modification.contains("Original flat illustration"))
+            assertTrue(entry.modification.contains("not a photograph"))
+            assertTrue(entry.modification.contains("not an exact reproduction"))
+
+            val image = requireNotNull(
+                ImageIO.read(repoFile("app/src/main/assets/${entry.asset}")),
+            ) { "${entry.stockId} must be a readable JPEG" }
+            assertEquals("${entry.stockId} width", 1200, image.width)
+            assertEquals("${entry.stockId} height", 600, image.height)
         }
-        assertEquals(PackagingMediaType.BOX, entries.first { it.stockId == "kodak_portra_160" }.mediaType)
-        assertEquals(PackagingMediaType.BOX, entries.first { it.stockId == "kodak_portra_800" }.mediaType)
-        assertEquals(PackagingMediaType.CARTRIDGE, entries.first { it.stockId == "kodak_portra_400" }.mediaType)
     }
 
     @Test

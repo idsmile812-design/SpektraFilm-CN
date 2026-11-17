@@ -1,8 +1,8 @@
 # 光谱胶片 · SpektraFilm CN
 
-面向中文用户的离线胶片模拟版本。当前测试版为 **0.12.0 (14)**。默认打开单页拍摄工作台：CameraX 取景、胶片横滑、曝光/颗粒/光晕与快门同页完成；相机模式浏览不触发渲染，确认照片后才应用所选风格。专业暗房保留 RAW、曲线、蒙版和事务导出。角色应用图标由项目维护者提供的图片制作。
+面向中文用户的离线胶片模拟版本。当前测试版为 **0.12.1 (15)**。默认打开单页拍摄工作台：CameraX 取景、胶片横滑、曝光/颗粒/光晕与快门同页完成；相机模式浏览不触发渲染，确认照片后才应用所选风格。专业暗房保留 RAW、曲线、蒙版和事务导出。角色应用图标由项目维护者提供的图片制作。Portra 160／400／800 使用原创扁平包装插画，不再内置产品摄影。
 
-- **[下载 Android 测试版](https://github.com/idsmile812-design/SpektraFilm-CN/releases/tag/cn-v0.12.0-test)**
+- **[下载 Android 测试版](https://github.com/idsmile812-design/SpektraFilm-CN/releases/tag/cn-v0.12.1-test)**
 - **[打开下载与安装页面](https://idsmile812-design.github.io/SpektraFilm-CN/)**
 - Android 7.0+；arm64-v8a、armeabi-v7a、x86_64；无 `INTERNET` 权限。
 - 本包使用测试证书签名，鸿蒙 4.2 与不同手机 GPU 仍需真机验证。

@@ -743,9 +743,9 @@
     <string name="workbench_open_photo">Choose a photo</string>
     <string name="workbench_open_raw">Open a RAW file</string>
     <string name="workbench_darkroom">Open the professional darkroom</string>
-    <string name="workbench_exposure">EV</string>
-    <string name="workbench_grain">Grain</string>
-    <string name="workbench_halation">Halation</string>
+    <string name="workbench_exposure">Film exposure</string>
+    <string name="workbench_grain">Grain strength</string>
+    <string name="workbench_halation">Halation strength</string>
     <string name="workbench_meter_title">Film meter</string>
     <string name="workbench_shutter">Shutter</string>
     <string name="workbench_shutter_desc">Shutter, take a photo</string>
@@ -758,4 +758,29 @@
     <string name="workbench_photo_desc">Current photo in the capture workbench</string>
     <string name="workbench_no_photo">Choose a photo or RAW file to begin</string>
     <string name="workbench_return">Return to the capture workbench</string>
+    <!-- Workbench finishing, native zoom and named plate actions -->
+    <string name="workbench_meter_camera_hint">Applies after you confirm a photo</string>
+    <string name="workbench_meter_photo_hint">Changes re-render the photo</string>
+    <string name="workbench_meter_decrease">Decrease %1$s</string>
+    <string name="workbench_meter_increase">Increase %1$s</string>
+    <string name="workbench_action_photo">Photo</string>
+    <string name="workbench_action_raw">RAW</string>
+    <string name="workbench_action_darkroom">Darkroom</string>
+    <string name="workbench_lens_back">Back</string>
+    <string name="workbench_lens_front">Front</string>
+    <string name="workbench_border">Border</string>
+    <string name="workbench_border_none">None</string>
+    <string name="workbench_border_white">White</string>
+    <string name="workbench_border_black">Black</string>
+    <string name="workbench_date">Date</string>
+    <string name="workbench_date_off">Off</string>
+    <string name="workbench_date_date">Date</string>
+    <string name="workbench_date_datetime">Date &amp; time</string>
+    <string name="workbench_save_photo">Save photo</string>
+    <string name="workbench_zoom_out">Zoom out, currently %1$s</string>
+    <string name="workbench_zoom_in">Zoom in, currently %1$s</string>
+    <string name="workbench_zoom_set">Set zoom %1$s</string>
+    <string name="workbench_finishing_unsupported_title">Finishing not supported</string>
+    <string name="workbench_finishing_unsupported_body">A border or date can only be printed on 8-bit JPEG, PNG, or Ultra HDR photos. The %1$s export was stopped so the decoration is not silently dropped.</string>
+    <string name="workbench_finishing_unsupported_ok">OK</string>
 </resources>

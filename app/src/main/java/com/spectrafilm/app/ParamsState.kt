@@ -103,6 +103,9 @@ class ParamsState {
     // stage. Hue-neutral (master = all channels). Lives in the Tone Curve panel; gated by its switch.
     var contrast by mutableFloatStateOf(0f)
 
+    // Workbench display exposure in EV; 0 = identity. Applied by ColorGrade after the engine.
+    var displayExposureEv by mutableFloatStateOf(0f)
+
     // Creative Saturation / Vibrance [-100,100]; 0 = identity. NOT SpektraParams fields — applied as a
     // post-engine Oklab chroma grade on the output buffer (ColorGrade), so the engine + parity suite
     // are untouched. Saturation is uniform; Vibrance weights low-chroma (muted) colors more.

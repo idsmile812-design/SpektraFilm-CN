@@ -1,15 +1,14 @@
 /*
- * Spektrafilm for Android — Saturation / Vibrance (Oklab post-engine grade). GPLv3.
+ * Spektrafilm for Android — display exposure + Saturation / Vibrance. GPLv3.
  * Film modeling powered by spektrafilm.
  *
- * A creative chroma grade applied to the engine's OUTPUT buffer (display-referred RGB), in place,
- * once, right after simulate — so it shows live in preview and on export identically. Forum pain #3
- * ("too punchy; I want less saturation") needs a plain Saturation/Vibrance control; the couplers'
- * 3×3 inter-layer matrix is the wrong UI for it. This is a Tier-2 post-op: no engine/spektra-core/cpp
- * is touched, so the 26-test parity suite is unaffected, and default (0,0) is a strict no-op.
+ * A creative output grade applied to the engine's OUTPUT buffer (display-referred RGB), in place,
+ * once, right after simulate — so it shows live in preview and on export identically. Workbench EV
+ * scales linear RGB before the chroma grade. Saturation/Vibrance then scale Oklab chroma while
+ * preserving lightness and hue. This is a Tier-2 post-op: no engine/spektra-core/cpp is touched,
+ * and neutral defaults are a strict no-op.
  *
- * Method (per the design in docs/USER_DRIVEN_SOLUTIONS.md §3.2): decode the output CCTF → linear →
- * Oklab (Ottosson); scale chroma C while preserving lightness L and hue; back to linear → re-encode.
+ * Method: decode the output CCTF → linear → exposure → gamut compression → Oklab chroma → encode.
  *   • Saturation: uniform   C' = C·(1+sat)         (sat ∈ [-1,1]; -1 = grayscale, +1 = 2×).
  *   • Vibrance:   low-chroma-weighted  C' = C·(1+vib·exp(-C/C0)), C0≈0.12 (boosts muted colors, keeps
  *     already-saturated ones from clipping). The two compose: f = (1+sat)·(1+vib·exp(-C/C0)).
@@ -33,10 +32,8 @@ object ColorGrade {
     fun isActive(saturation: Float, vibrance: Float): Boolean = saturation != 0f || vibrance != 0f
 
     /**
-     * Apply gamut compression + Saturation/Vibrance in place to the engine output [data] (interleaved
-     * float32 RGB, the SimResult buffer), encoded in [cs] per [cctfEncoded]. Both share one CCTF
-     * round-trip: decode → (gamut compress) → (Oklab chroma scale) → encode. No-op (zero per-pixel
-     * cost) when [gamutCompress] is 0 and [saturation]/[vibrance] are both 0.
+     * Apply display exposure, gamut compression and Saturation/Vibrance in one CCTF round-trip.
+     * Neutral defaults return before reading pixels, preserving the exact historical no-op.
      */
     fun applyInPlace(
         data: ByteBuffer,
@@ -47,10 +44,17 @@ object ColorGrade {
         saturation: Float,
         vibrance: Float,
         gamutCompress: Float = 0f,
+        exposureEv: Float = 0f,
     ) {
         val chroma = isActive(saturation, vibrance)
         val gamut = GamutCompress.isActive(gamutCompress)
-        if (!chroma && !gamut) return
+        val exposure = exposureEv.isFinite() && exposureEv != 0f
+        if (!chroma && !gamut && !exposure) return
+        val exposureMultiplier = if (exposure) {
+            Math.pow(2.0, exposureEv.toDouble()).toFloat()
+        } else {
+            1f
+        }
         val sat = saturation / 100f
         val vib = vibrance / 100f
         val f = data.order(ByteOrder.nativeOrder()).asFloatBuffer()
@@ -60,9 +64,9 @@ object ColorGrade {
         while (i < n) {
             val k = i * 3
             // display → linear (in the output space's primaries)
-            var rl = OutputCctf.decode(cs, f.get(k), cctfEncoded)
-            var gl = OutputCctf.decode(cs, f.get(k + 1), cctfEncoded)
-            var bl = OutputCctf.decode(cs, f.get(k + 2), cctfEncoded)
+            var rl = OutputCctf.decode(cs, f.get(k), cctfEncoded) * exposureMultiplier
+            var gl = OutputCctf.decode(cs, f.get(k + 1), cctfEncoded) * exposureMultiplier
+            var bl = OutputCctf.decode(cs, f.get(k + 2), cctfEncoded) * exposureMultiplier
 
             // Gamut compression first: pull the most-saturated colors toward neutral (softens clip).
             if (gamut) {

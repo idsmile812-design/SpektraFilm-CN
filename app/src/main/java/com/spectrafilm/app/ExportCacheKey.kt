@@ -54,6 +54,12 @@ internal object ExportCacheKey {
         val vibrance: Float,
         val gamutCompress: Float,
         val localAdjustments: List<com.spectrafilm.app.masks.LocalAdjustment>,
+        /**
+         * The workbench print finish (border/date/frozen capture timestamp). Empty is the
+         * historical no-finishing identity, so existing callers keep their old key material.
+         */
+        val finishingKey: String = "",
+        val displayExposureEv: Float = 0f,
     )
 
     /**
@@ -90,6 +96,8 @@ internal object ExportCacheKey {
             grade.localAdjustments.forEachIndexed { index, adjustment ->
                 line("grade.adjustment.$index", adjustment.toString())
             }
+            line("grade.finishing", grade.finishingKey)
+            line("grade.displayExposureEv", grade.displayExposureEv)
 
             // Enumerated rather than delegated: OutputDescriptor.toString() is a summary.
             line("out.format", descriptor.format.name)
@@ -159,8 +167,8 @@ internal object ExportCacheKey {
     internal fun sha256Hex(bytes: ByteArray): String =
         ExportCache.hex(MessageDigest.getInstance("SHA-256").digest(bytes))
 
-    /** Bumped if the layout of the key material itself changes. */
-    private const val SCHEMA = "spk.export_cache_key.v1"
+    /** Bumped if the layout of the key material itself changes. v3 adds display exposure. */
+    private const val SCHEMA = "spk.export_cache_key.v3"
 
     /**
      * Bumped when the engine's numeric output changes for unchanged parameters — a new engine

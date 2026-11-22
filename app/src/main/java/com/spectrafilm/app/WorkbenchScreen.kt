@@ -25,6 +25,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -60,6 +62,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -72,8 +75,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -100,8 +101,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import java.io.File
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.roundToInt
+import kotlinx.coroutines.Dispatchers
 
 // The workbench body is its own small instrument: near-black green, low-luminance grey-green
 // lettering and one amber reference colour. These are deliberately fixed rather than pulled
@@ -138,6 +141,7 @@ internal fun WorkbenchScreen(
     onOpenRawPicker: () -> Unit,
     onOpenDarkroom: () -> Unit,
     onUsePhoto: (Uri, WorkbenchSelection) -> Unit,
+    onSavePhoto: () -> Unit,
 ) {
     val context = LocalContext.current
     val packagingByStock = remember(context) {
@@ -152,7 +156,7 @@ internal fun WorkbenchScreen(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .then(if (compact) Modifier.verticalScroll(rememberScrollState()) else Modifier),
+                    .verticalScroll(rememberScrollState()),
             ) {
                 WorkbenchTopPlate(
                     onOpenPhotoPicker = onOpenPhotoPicker,
@@ -160,15 +164,15 @@ internal fun WorkbenchScreen(
                     onOpenDarkroom = onOpenDarkroom,
                 )
                 Box(
-                    (if (compact) {
-                        Modifier.fillMaxWidth().height(360.dp)
-                    } else {
-                        Modifier.fillMaxWidth().weight(1f)
-                    }).clip(androidx.compose.ui.graphics.RectangleShape),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(if (compact) 360.dp else 420.dp)
+                        .clip(androidx.compose.ui.graphics.RectangleShape),
                 ) {
                     if (photoMode) {
                         PhotoStage(
                             preview = preview,
+                            selection = selection,
                             modifier = Modifier.fillMaxSize(),
                         )
                     } else {
@@ -184,7 +188,7 @@ internal fun WorkbenchScreen(
                 CameraMeterDeck(
                     selection = selection,
                     onSelectionChange = onSelectionChange,
-                    stacked = compact,
+                    photoMode = photoMode,
                 )
                 if (selected != null) {
                     LoadedFilmStrip(
@@ -201,6 +205,13 @@ internal fun WorkbenchScreen(
                         if (photoMode) onApplyPreset(preset)
                     },
                 )
+                WorkbenchFinishingOptions(
+                    selection = selection,
+                    onSelectionChange = onSelectionChange,
+                )
+                if (photoMode) {
+                    WorkbenchSaveBar(onSavePhoto = onSavePhoto)
+                }
             }
         }
     }
@@ -236,56 +247,118 @@ private fun WorkbenchTopPlate(
                     maxLines = 1,
                 )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                PlateIconButton(
-                    icon = SpectraIcons.SourceImage,
-                    description = stringResource(R.string.workbench_open_photo),
-                    onClick = onOpenPhotoPicker,
-                )
-                PlateIconButton(
-                    icon = SpectraIcons.ImportRaw,
-                    description = stringResource(R.string.workbench_open_raw),
-                    onClick = onOpenRawPicker,
-                )
-                PlateIconButton(
-                    icon = SpectraIcons.Settings,
-                    description = stringResource(R.string.workbench_darkroom),
-                    onClick = onOpenDarkroom,
-                )
-            }
+        }
+        // Named actions, not three anonymous glyphs. The row scrolls instead of squeezing the
+        // title: large fonts and narrow phones keep every label readable and every target 48dp.
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(start = 16.dp, end = 8.dp, bottom = 7.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PlateTextButton(
+                label = stringResource(R.string.workbench_action_photo),
+                description = stringResource(R.string.workbench_open_photo),
+                onClick = onOpenPhotoPicker,
+            )
+            PlateTextButton(
+                label = stringResource(R.string.workbench_action_raw),
+                description = stringResource(R.string.workbench_open_raw),
+                onClick = onOpenRawPicker,
+            )
+            PlateTextButton(
+                label = stringResource(R.string.workbench_action_darkroom),
+                description = stringResource(R.string.workbench_darkroom),
+                onClick = onOpenDarkroom,
+            )
         }
         Box(Modifier.fillMaxWidth().height(1.dp).background(WorkbenchLine))
     }
 }
 
 @Composable
-private fun PlateIconButton(
-    icon: ImageVector,
+private fun PlateTextButton(
+    label: String,
     description: String,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(2.dp)
     Box(
         Modifier
-            .size(48.dp)
-            .clickable(role = Role.Button, onClick = onClick)
-            .semantics { contentDescription = description }
-            .padding(3.dp)
+            .heightIn(min = 48.dp)
             .clip(shape)
             .background(WorkbenchPanel.copy(alpha = 0.55f))
-            .border(1.dp, WorkbenchLine, shape),
+            .border(1.dp, WorkbenchLine, shape)
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics { contentDescription = description }
+            .padding(horizontal = 14.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = null, tint = WorkbenchWhite, modifier = Modifier.size(21.dp))
+        Text(
+            label,
+            color = WorkbenchWhite,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+        )
     }
 }
 
 @Composable
-private fun PhotoStage(preview: Bitmap?, modifier: Modifier = Modifier) {
+private fun PhotoStage(
+    preview: Bitmap?,
+    selection: WorkbenchSelection,
+    modifier: Modifier = Modifier,
+) {
+    val finishing = selection.finishingConfig()
+    // Compose the border/date onto the already graded preview. The source is leased for the
+    // duration of the copy, so a render settling at the same moment cannot recycle it under us.
+    val finished by produceState<Bitmap?>(initialValue = null, preview, finishing) {
+        val source = preview
+        if (source == null) {
+            value = null
+            return@produceState
+        }
+        if (finishing.isIdentity) {
+            value = source
+            return@produceState
+        }
+        value = runCatching {
+            withOwnedContext(
+                context = Dispatchers.Default,
+                dispose = { decorated: Bitmap ->
+                    if (decorated !== source) retirePreviewBitmap(decorated)
+                },
+            ) {
+                val lease = acquirePreviewLease(source)
+                if (lease == null) {
+                    source
+                } else {
+                    try {
+                        WorkbenchFinishing.render(lease.value, finishing)
+                    } finally {
+                        lease.close()
+                    }
+                }
+            }
+        }.getOrNull()
+    }
+    DisposableEffect(finished) {
+        val own = finished
+        onDispose {
+            // The current draw lease decides when an old finishing copy is physically recycled.
+            if (own != null && own !== preview) retirePreviewBitmap(own)
+        }
+    }
+    val sourceImage = if (preview != null) rememberLeasedImage(preview) else null
+    val decoratedImage = finished?.let { rememberLeasedImage(it) }
+    val shown = decoratedImage ?: sourceImage
     Box(modifier.background(Color.Black), contentAlignment = Alignment.Center) {
-        if (preview != null) {
+        if (shown != null) {
             Image(
-                bitmap = preview.asImageBitmap(),
+                bitmap = shown,
                 contentDescription = stringResource(R.string.workbench_photo_desc),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
@@ -319,11 +392,18 @@ private fun PhotoStage(preview: Bitmap?, modifier: Modifier = Modifier) {
 private fun CameraMeterDeck(
     selection: WorkbenchSelection,
     onSelectionChange: (WorkbenchSelection) -> Unit,
-    stacked: Boolean,
+    photoMode: Boolean,
 ) {
     val exposureLabel = stringResource(R.string.workbench_exposure)
     val grainLabel = stringResource(R.string.workbench_grain)
     val halationLabel = stringResource(R.string.workbench_halation)
+    val hint = stringResource(
+        if (photoMode) {
+            R.string.workbench_meter_photo_hint
+        } else {
+            R.string.workbench_meter_camera_hint
+        },
+    )
 
     Column(Modifier.fillMaxWidth().background(WorkbenchBody)) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(WorkbenchLine))
@@ -344,71 +424,40 @@ private fun CameraMeterDeck(
                 modifier = Modifier.weight(1f),
             )
             Text(
-                "35 mm",
-                color = WorkbenchMuted.copy(alpha = 0.72f),
+                hint,
+                color = WorkbenchAmber,
                 style = MaterialTheme.typography.labelSmall,
-                fontFamily = FontFamily.Monospace,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
-        if (stacked) {
-            Column(Modifier.fillMaxWidth()) {
-                MeterChannel(
-                    label = exposureLabel,
-                    value = selection.exposureEv,
-                    range = -2f..2f,
-                    kind = MeterKind.EXPOSURE,
-                    onChange = { onSelectionChange(selection.copy(exposureEv = it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                MeterDivider(vertical = false)
-                MeterChannel(
-                    label = grainLabel,
-                    value = selection.grain,
-                    range = 0f..2f,
-                    kind = MeterKind.GRAIN,
-                    onChange = { onSelectionChange(selection.copy(grain = it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                MeterDivider(vertical = false)
-                MeterChannel(
-                    label = halationLabel,
-                    value = selection.halation,
-                    range = 0f..2f,
-                    kind = MeterKind.HALATION,
-                    onChange = { onSelectionChange(selection.copy(halation = it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        } else {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                MeterChannel(
-                    label = exposureLabel,
-                    value = selection.exposureEv,
-                    range = -2f..2f,
-                    kind = MeterKind.EXPOSURE,
-                    onChange = { onSelectionChange(selection.copy(exposureEv = it)) },
-                    modifier = Modifier.weight(1.15f),
-                )
-                MeterDivider(vertical = true)
-                MeterChannel(
-                    label = grainLabel,
-                    value = selection.grain,
-                    range = 0f..2f,
-                    kind = MeterKind.GRAIN,
-                    onChange = { onSelectionChange(selection.copy(grain = it)) },
-                    modifier = Modifier.weight(1f),
-                )
-                MeterDivider(vertical = true)
-                MeterChannel(
-                    label = halationLabel,
-                    value = selection.halation,
-                    range = 0f..2f,
-                    kind = MeterKind.HALATION,
-                    onChange = { onSelectionChange(selection.copy(halation = it)) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
+        MeterChannel(
+            label = exposureLabel,
+            value = selection.exposureEv,
+            range = -2f..2f,
+            kind = MeterKind.EXPOSURE,
+            onChange = { onSelectionChange(selection.copy(exposureEv = it)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        MeterDivider(vertical = false)
+        MeterChannel(
+            label = grainLabel,
+            value = selection.grain,
+            range = 0f..2f,
+            kind = MeterKind.GRAIN,
+            onChange = { onSelectionChange(selection.copy(grain = it)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        MeterDivider(vertical = false)
+        MeterChannel(
+            label = halationLabel,
+            value = selection.halation,
+            range = 0f..2f,
+            kind = MeterKind.HALATION,
+            onChange = { onSelectionChange(selection.copy(halation = it)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
         Box(Modifier.fillMaxWidth().height(1.dp).background(WorkbenchLine))
     }
 }
@@ -433,23 +482,9 @@ private fun MeterChannel(
 ) {
     val valueText = meterText(kind, value)
     val steps = ((range.endInclusive - range.start) / METER_STEP).roundToInt() - 1
-    Column(
-        modifier
-            .semantics(mergeDescendants = true) {
-                contentDescription = label
-                stateDescription = valueText
-                progressBarRangeInfo = ProgressBarRangeInfo(
-                    current = value,
-                    range = range,
-                    steps = steps.coerceAtLeast(0),
-                )
-                setProgress { proposed ->
-                    onChange(snapMeterValue(proposed, range))
-                    true
-                }
-            }
-            .padding(horizontal = 8.dp, vertical = 5.dp),
-    ) {
+    val decreaseDescription = stringResource(R.string.workbench_meter_decrease, label)
+    val increaseDescription = stringResource(R.string.workbench_meter_increase, label)
+    Column(modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 label,
@@ -468,12 +503,79 @@ private fun MeterChannel(
                 maxLines = 1,
             )
         }
-        MeterTrack(
-            kind = kind,
-            value = value,
-            range = range,
-            onChange = onChange,
-            modifier = Modifier.fillMaxWidth().padding(top = 2.dp),
+        Row(
+            Modifier.fillMaxWidth().padding(top = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            MeterStepButton(
+                symbol = "−",
+                description = decreaseDescription,
+                valueText = valueText,
+                enabled = value > range.start,
+                onClick = { onChange(stepMeterValue(value, range, -METER_STEP)) },
+            )
+            MeterTrack(
+                kind = kind,
+                value = value,
+                range = range,
+                onChange = onChange,
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics {
+                        contentDescription = label
+                        stateDescription = valueText
+                        progressBarRangeInfo = ProgressBarRangeInfo(
+                            current = value,
+                            range = range,
+                            steps = steps.coerceAtLeast(0),
+                        )
+                        setProgress { proposed ->
+                            onChange(snapMeterValue(proposed, range))
+                            true
+                        }
+                    },
+            )
+            MeterStepButton(
+                symbol = "+",
+                description = increaseDescription,
+                valueText = valueText,
+                enabled = value < range.endInclusive,
+                onClick = { onChange(stepMeterValue(value, range, METER_STEP)) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun MeterStepButton(
+    symbol: String,
+    description: String,
+    valueText: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    val shape = RoundedCornerShape(2.dp)
+    Box(
+        Modifier
+            .size(48.dp)
+            .clip(shape)
+            .background(WorkbenchPanel)
+            .border(1.dp, WorkbenchLine, shape)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .semantics {
+                contentDescription = description
+                stateDescription = valueText
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            symbol,
+            color = if (enabled) WorkbenchWhite else WorkbenchMuted.copy(alpha = 0.45f),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = FontFamily.Monospace,
+            maxLines = 1,
         )
     }
 }
@@ -661,6 +763,16 @@ private fun snapMeterValue(raw: Float, range: ClosedFloatingPointRange<Float>): 
     return if (snapped == 0f) 0f else snapped
 }
 
+/** One -/+ press is exactly one 0.1 step, clamped and snapped to the same contract as the track. */
+internal fun stepMeterValue(
+    value: Float,
+    range: ClosedFloatingPointRange<Float>,
+    delta: Float,
+): Float {
+    val base = if (value.isFinite()) value else range.start
+    return snapMeterValue(base + delta, range)
+}
+
 // ---------------------------------------------------------------------------
 // Film rail
 //
@@ -758,6 +870,148 @@ private fun FilmRail(
                     modifier = Modifier.width(itemWidth),
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun WorkbenchFinishingOptions(
+    selection: WorkbenchSelection,
+    onSelectionChange: (WorkbenchSelection) -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(WorkbenchBody)
+            .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        // A migrated/legacy selection may have no capture time. Stamp it ONCE when the date is
+        // first enabled so an old photo does not print as 1970; later edits and exports reuse it.
+        fun chooseDate(value: WorkbenchDate) {
+            val timestamp = if (value == WorkbenchDate.OFF || selection.captureTimestampMs > 0L) {
+                selection.captureTimestampMs
+            } else {
+                System.currentTimeMillis()
+            }
+            onSelectionChange(selection.copy(date = value, captureTimestampMs = timestamp))
+        }
+        Row(
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                stringResource(R.string.workbench_border),
+                color = WorkbenchMuted,
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                modifier = Modifier.padding(end = 4.dp),
+            )
+            FinishingOptionChip(
+                label = stringResource(R.string.workbench_border_none),
+                selected = selection.border == WorkbenchBorder.NONE,
+                onClick = { onSelectionChange(selection.copy(border = WorkbenchBorder.NONE)) },
+            )
+            FinishingOptionChip(
+                label = stringResource(R.string.workbench_border_white),
+                selected = selection.border == WorkbenchBorder.WHITE,
+                onClick = { onSelectionChange(selection.copy(border = WorkbenchBorder.WHITE)) },
+            )
+            FinishingOptionChip(
+                label = stringResource(R.string.workbench_border_black),
+                selected = selection.border == WorkbenchBorder.BLACK,
+                onClick = { onSelectionChange(selection.copy(border = WorkbenchBorder.BLACK)) },
+            )
+        }
+        Row(
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                stringResource(R.string.workbench_date),
+                color = WorkbenchMuted,
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                modifier = Modifier.padding(end = 4.dp),
+            )
+            FinishingOptionChip(
+                label = stringResource(R.string.workbench_date_off),
+                selected = selection.date == WorkbenchDate.OFF,
+                onClick = { chooseDate(WorkbenchDate.OFF) },
+            )
+            FinishingOptionChip(
+                label = stringResource(R.string.workbench_date_date),
+                selected = selection.date == WorkbenchDate.DATE,
+                onClick = { chooseDate(WorkbenchDate.DATE) },
+            )
+            FinishingOptionChip(
+                label = stringResource(R.string.workbench_date_datetime),
+                selected = selection.date == WorkbenchDate.DATE_TIME,
+                onClick = { chooseDate(WorkbenchDate.DATE_TIME) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun FinishingOptionChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val shape = RoundedCornerShape(2.dp)
+    Box(
+        Modifier
+            .heightIn(min = 48.dp)
+            .clip(shape)
+            .background(if (selected) WorkbenchAmber.copy(alpha = 0.16f) else WorkbenchPanel)
+            .border(
+                1.dp,
+                if (selected) WorkbenchAmber else WorkbenchLine,
+                shape,
+            )
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics { this.selected = selected }
+            .padding(horizontal = 14.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            label,
+            color = if (selected) WorkbenchAmber else WorkbenchWhite,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+            maxLines = 1,
+        )
+    }
+}
+
+@Composable
+private fun WorkbenchSaveBar(onSavePhoto: () -> Unit) {
+    val label = stringResource(R.string.workbench_save_photo)
+    Column(Modifier.fillMaxWidth().background(WorkbenchBody)) {
+        Box(Modifier.fillMaxWidth().height(1.dp).background(WorkbenchLine))
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .heightIn(min = 52.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(WorkbenchAmber.copy(alpha = 0.14f))
+                .border(1.dp, WorkbenchAmber, RoundedCornerShape(2.dp))
+                .clickable(role = Role.Button, onClick = onSavePhoto)
+                .semantics { contentDescription = label },
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                label,
+                color = WorkbenchAmber,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.8.sp,
+                maxLines = 1,
+            )
         }
     }
 }
@@ -1064,6 +1318,26 @@ private fun CameraStage(
     onCapture: () -> Unit,
 ) {
     val flipDescription = stringResource(R.string.camera_action_flip)
+    val lensLabel = stringResource(
+        if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+            R.string.workbench_lens_front
+        } else {
+            R.string.workbench_lens_back
+        },
+    )
+    var requestedZoom by remember(lensFacing) { mutableStateOf(1f) }
+
+    // A lens change rebinds the camera and publishes that camera's real range; pull the requested
+    // ratio back inside it instead of assuming 2x/0.5x exists. The displayed value stays the
+    // ZoomState read-back, so a device clamp is visible immediately.
+    LaunchedEffect(previewStatus.minZoom, previewStatus.maxZoom, lensFacing) {
+        requestedZoom = clampZoomRatio(
+            requestedZoom,
+            previewStatus.minZoom,
+            previewStatus.maxZoom,
+        )
+    }
+
     Column(Modifier.fillMaxSize().background(WorkbenchBody)) {
         Box(Modifier.fillMaxWidth().weight(1f).background(Color.Black)) {
             CameraPreview(
@@ -1071,7 +1345,25 @@ private fun CameraStage(
                 lifecycleOwner = lifecycleOwner,
                 lensFacing = lensFacing,
                 onStatus = onStatus,
+                zoomRatio = requestedZoom,
                 modifier = Modifier.fillMaxSize(),
+            )
+            // Pinch drives the same requested ratio as the visible -/+ control. The transparent
+            // overlay is below the explicit buttons, so they still receive their own taps.
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(lensFacing, previewStatus.minZoom, previewStatus.maxZoom) {
+                        detectTransformGestures { _, _, zoom, _ ->
+                            if (!capturing && zoom.isFinite() && zoom > 0f) {
+                                requestedZoom = clampZoomRatio(
+                                    requestedZoom * zoom,
+                                    previewStatus.minZoom,
+                                    previewStatus.maxZoom,
+                                )
+                            }
+                        }
+                    },
             )
             ViewfinderCornerMarks(Modifier.fillMaxSize())
             RenderNotePlate(
@@ -1079,11 +1371,35 @@ private fun CameraStage(
                     .align(Alignment.TopCenter)
                     .padding(top = 12.dp, start = 24.dp, end = 24.dp),
             )
-            Box(
+            ZoomPlate(
+                ratio = previewStatus.zoomRatio,
+                minZoom = previewStatus.minZoom,
+                maxZoom = previewStatus.maxZoom,
+                enabled = previewStatus.ready && !capturing,
+                onStep = { direction ->
+                    requestedZoom = stepZoomRatio(
+                        previewStatus.zoomRatio,
+                        previewStatus.minZoom,
+                        previewStatus.maxZoom,
+                        direction,
+                    )
+                },
+                onSet = { ratio ->
+                    requestedZoom = clampZoomRatio(
+                        ratio,
+                        previewStatus.minZoom,
+                        previewStatus.maxZoom,
+                    )
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(12.dp),
+            )
+            Row(
                 Modifier
                     .align(Alignment.BottomEnd)
                     .padding(12.dp)
-                    .size(48.dp)
+                    .heightIn(min = 48.dp)
                     .alpha(if (previewStatus.canFlip && !capturing) 1f else 0.35f)
                     .clip(RoundedCornerShape(2.dp))
                     .background(Color.Black.copy(alpha = 0.55f))
@@ -1093,31 +1409,36 @@ private fun CameraStage(
                         role = Role.Button,
                         onClick = onFlip,
                     )
-                    .semantics { contentDescription = flipDescription },
-                contentAlignment = Alignment.Center,
+                    .semantics { contentDescription = flipDescription }
+                    .padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Icon(
                     SpectraIcons.FlipCamera,
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(20.dp),
                 )
-            }
-            if (errorText != null) {
                 Text(
-                    errorText,
-                    color = Color(0xFFFFB4AB),
-                    style = MaterialTheme.typography.labelSmall,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 12.dp, end = 72.dp, bottom = 16.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(Color.Black.copy(alpha = 0.68f))
-                        .padding(8.dp),
+                    lensLabel,
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
                 )
             }
+        }
+        if (errorText != null) {
+            Text(
+                errorText,
+                color = Color(0xFFFFB4AB),
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+            )
         }
         ShutterDock(
             ready = previewStatus.ready,
@@ -1125,6 +1446,127 @@ private fun CameraStage(
             flash = flash,
             onFlash = onFlash,
             onCapture = onCapture,
+        )
+    }
+}
+
+@Composable
+private fun ZoomPlate(
+    ratio: Float,
+    minZoom: Float,
+    maxZoom: Float,
+    enabled: Boolean,
+    onStep: (Int) -> Unit,
+    onSet: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val ratioText = formatZoomRatio(ratio)
+    val presets = zoomPresetRatios(minZoom, maxZoom)
+    val zoomOut = stringResource(R.string.workbench_zoom_out, ratioText)
+    val zoomIn = stringResource(R.string.workbench_zoom_in, ratioText)
+    Column(
+        modifier
+            .clip(RoundedCornerShape(2.dp))
+            .background(Color.Black.copy(alpha = 0.62f))
+            .border(1.dp, Color.White.copy(alpha = 0.18f), RoundedCornerShape(2.dp))
+            .padding(3.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            ZoomStepButton(
+                symbol = "−",
+                description = zoomOut,
+                enabled = enabled && ratio > minZoom + 0.001f,
+                onClick = { onStep(-1) },
+            )
+            Text(
+                ratioText,
+                color = WorkbenchWhite,
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                modifier = Modifier.width(62.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
+            ZoomStepButton(
+                symbol = "+",
+                description = zoomIn,
+                enabled = enabled && ratio < maxZoom - 0.001f,
+                onClick = { onStep(1) },
+            )
+        }
+        if (presets.isNotEmpty()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                presets.forEach { preset ->
+                    val label = if (preset % 1f == 0f) {
+                        "${preset.toInt()}×"
+                    } else {
+                        formatZoomRatio(preset)
+                    }
+                    val selected = abs(ratio - preset) < 0.05f
+                    val setDescription = stringResource(
+                        R.string.workbench_zoom_set,
+                        formatZoomRatio(preset),
+                    )
+                    Box(
+                        Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(
+                                if (selected) {
+                                    WorkbenchAmber.copy(alpha = 0.24f)
+                                } else {
+                                    WorkbenchPanel.copy(alpha = 0.72f)
+                                },
+                            )
+                            .clickable(enabled = enabled, role = Role.Button) { onSet(preset) }
+                            .semantics {
+                                contentDescription = setDescription
+                                this.selected = selected
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            label,
+                            color = if (selected) WorkbenchAmber else WorkbenchWhite,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = FontFamily.Monospace,
+                            maxLines = 1,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ZoomStepButton(
+    symbol: String,
+    description: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        Modifier
+            .size(48.dp)
+            .clip(RoundedCornerShape(2.dp))
+            .background(WorkbenchPanel.copy(alpha = 0.72f))
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .semantics { contentDescription = description },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            symbol,
+            color = if (enabled) WorkbenchWhite else WorkbenchMuted.copy(alpha = 0.4f),
+            style = MaterialTheme.typography.titleMedium,
+            fontFamily = FontFamily.Monospace,
+            maxLines = 1,
         )
     }
 }

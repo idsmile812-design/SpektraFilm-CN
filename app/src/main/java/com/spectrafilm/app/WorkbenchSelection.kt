@@ -16,31 +16,65 @@ internal data class WorkbenchSelection(
     val halation: Float = 1f,
     val lens: WorkbenchLens = WorkbenchLens.BACK,
     val flash: WorkbenchFlash = WorkbenchFlash.AUTO,
+    val border: WorkbenchBorder = WorkbenchBorder.NONE,
+    val date: WorkbenchDate = WorkbenchDate.OFF,
+    val captureTimestampMs: Long = 0L,
 ) {
     fun toJson(): JSONObject = JSONObject()
-        .put("version", 1)
+        .put("version", 2)
         .put("preset", presetId)
-        .put("exposure", exposureEv.toDouble())
-        .put("grain", grain.toDouble())
-        .put("halation", halation.toDouble())
+        .put("exposure", finiteOr(exposureEv, 0f).toDouble())
+        .put("grain", finiteOr(grain, 1f).toDouble())
+        .put("halation", finiteOr(halation, 1f).toDouble())
         .put("lens", lens.name)
         .put("flash", flash.name)
+        .put("border", border.name)
+        .put("date", date.name)
+        .put("captureTimestampMs", captureTimestampMs.coerceIn(0L, WORKBENCH_MAX_CAPTURE_TIMESTAMP_MS))
 
+    fun finishingConfig(): WorkbenchFinishingConfig =
+        WorkbenchFinishingConfig(
+            border = border,
+            date = date,
+            captureTimestampMs = captureTimestampMs,
+        )
+
+    /**
+     * Apply the workbench offsets ON TOP OF the currently selected preset. The caller must have
+     * applied the preset first (MainActivity re-applies it for every update), which is what keeps
+     * repeated slider updates from accumulating.
+     *
+     * A zero grain/halation amount is a real OFF switch: it disables the stage outright rather
+     * than multiplying its strength by zero. A positive amount leaves the preset's own
+     * active/inactive choice alone.
+     */
     fun applyAdjustments(state: ParamsState) {
-        state.exposureCompensationEv = (state.exposureCompensationEv + exposureEv)
+        val exposure = exposureEv.takeIf { it.isFinite() }?.coerceIn(-2f, 2f) ?: 0f
+        val grainScale = grain.takeIf { it.isFinite() }?.coerceIn(0f, 2f) ?: 1f
+        val halationScale = halation.takeIf { it.isFinite() }?.coerceIn(0f, 2f) ?: 1f
+
+        state.exposureCompensationEv = (state.exposureCompensationEv + exposure)
             .coerceIn(-4f, 4f)
-        state.grainParticleScale = state.grainParticleScale.times(grain)
-        state.halHalationAmount = (state.halHalationAmount * halation).coerceIn(0f, 4f)
+        if (exposure != 0f) state.autoExposure = false
+        state.displayExposureEv = exposure
+        state.grainParticleScale = state.grainParticleScale.times(grainScale)
+        if (grainScale == 0f) state.grainActive = false
+        state.halHalationAmount = (state.halHalationAmount * halationScale).coerceIn(0f, 4f)
+        if (halationScale == 0f) state.halationActive = false
     }
 
     companion object {
         const val DEFAULT_PRESET_ID = "portra400_endura_wedding"
+        const val JSON_VERSION = 2
 
         fun fromJson(raw: String): WorkbenchSelection {
             if (raw.isBlank()) return WorkbenchSelection()
             return runCatching {
                 val json = JSONObject(raw)
-                require(json.optInt("version") == 1)
+                val version = json.optInt("version", 0)
+                // v1 documents simply omit the finishing keys; every default below is the v1
+                // behaviour, so migration is loss-less.
+                require(version == 1 || version == JSON_VERSION)
                 val default = WorkbenchSelection()
                 WorkbenchSelection(
                     presetId = json.optString("preset", default.presetId)
@@ -50,6 +84,12 @@ internal data class WorkbenchSelection(
                     halation = json.finiteFloat("halation", default.halation, 0f, 2f),
                     lens = enumValueOrDefault(json.optString("lens"), default.lens),
                     flash = enumValueOrDefault(json.optString("flash"), default.flash),
+                    border = enumValueOrDefault(json.optString("border"), default.border),
+                    date = enumValueOrDefault(json.optString("date"), default.date),
+                    captureTimestampMs = json.finiteTimestamp(
+                        "captureTimestampMs",
+                        default.captureTimestampMs,
+                    ),
                 )
             }.getOrElse { WorkbenchSelection() }
         }
@@ -64,10 +104,25 @@ internal data class WorkbenchSelection(
             return if (value.isFinite()) value.coerceIn(minimum, maximum) else default
         }
 
+        private fun JSONObject.finiteTimestamp(key: String, default: Long): Long {
+            val raw = opt(key) ?: return default
+            val value = (raw as? Number)?.toLong()
+                ?: (raw as? String)?.toLongOrNull()
+                ?: return default
+            return value.coerceIn(0L, WORKBENCH_MAX_CAPTURE_TIMESTAMP_MS)
+        }
+
         private inline fun <reified T : Enum<T>> enumValueOrDefault(raw: String, default: T): T =
             runCatching { enumValueOf<T>(raw) }.getOrDefault(default)
     }
 }
 
+private fun finiteOr(value: Float, fallback: Float): Float =
+    if (value.isFinite()) value else fallback
+
 private fun Triple<Float, Float, Float>.times(multiplier: Float): Triple<Float, Float, Float> =
-    Triple(first * multiplier, second * multiplier, third * multiplier)
+    Triple(
+        (first * multiplier).coerceIn(0.1f, 5f),
+        (second * multiplier).coerceIn(0.1f, 5f),
+        (third * multiplier).coerceIn(0.1f, 5f),
+    )

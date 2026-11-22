@@ -17,10 +17,12 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.core.ZoomState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
@@ -51,6 +53,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -334,7 +337,47 @@ internal data class CameraPreviewStatus(
     val ready: Boolean = false,
     val canFlip: Boolean = false,
     val failed: Boolean = false,
+    /** Actual device zoom, read back from CameraX's ZoomState — never the requested value. */
+    val zoomRatio: Float = 1f,
+    val minZoom: Float = 1f,
+    val maxZoom: Float = 1f,
+    /** The bound Camera, so the workbench can drive CameraControl without rebinding. */
+    val camera: Camera? = null,
 )
+
+/**
+ * Clamp a requested zoom to what the device actually supports. Invalid ranges fall back to 1x
+ * rather than throwing, and a non-finite request lands on the minimum supported ratio.
+ */
+internal fun clampZoomRatio(requested: Float, minZoom: Float, maxZoom: Float): Float {
+    val minimum = if (minZoom.isFinite() && minZoom > 0f) minZoom else 1f
+    val maximum = if (maxZoom.isFinite() && maxZoom >= minimum) maxZoom else minimum
+    val value = if (requested.isFinite()) requested else minimum
+    return value.coerceIn(minimum, maximum)
+}
+
+/** One visible +/- press moves by [step] and is clamped to the same device range. */
+internal fun stepZoomRatio(
+    current: Float,
+    minZoom: Float,
+    maxZoom: Float,
+    direction: Int,
+    step: Float = 0.5f,
+): Float {
+    val base = clampZoomRatio(current, minZoom, maxZoom)
+    val safeStep = if (step.isFinite() && step > 0f) step else 0.5f
+    return clampZoomRatio(base + if (direction < 0) -safeStep else safeStep, minZoom, maxZoom)
+}
+
+/** Quick ratios are offered only when the device range genuinely contains them. */
+internal fun zoomPresetRatios(minZoom: Float, maxZoom: Float): List<Float> {
+    val minimum = if (minZoom.isFinite() && minZoom > 0f) minZoom else 1f
+    val maximum = if (maxZoom.isFinite() && maxZoom >= minimum) maxZoom else minimum
+    return listOf(0.5f, 1f, 2f).filter { it in minimum..maximum }
+}
+
+internal fun formatZoomRatio(ratio: Float): String =
+    String.format(java.util.Locale.US, "%.1f×", if (ratio.isFinite()) ratio else 1f)
 
 @Composable
 internal fun CameraPreview(
@@ -343,9 +386,15 @@ internal fun CameraPreview(
     lensFacing: Int,
     onStatus: (CameraPreviewStatus) -> Unit,
     modifier: Modifier = Modifier,
+    /**
+     * Requested zoom. Null is the historical behaviour (leave CameraX at its default), so the
+     * old standalone capture screen keeps working unchanged.
+     */
+    zoomRatio: Float? = null,
 ) {
     val currentOnStatus by rememberUpdatedState(onStatus)
     var currentCapture by remember { mutableStateOf<ImageCapture?>(null) }
+    var currentCamera by remember { mutableStateOf<Camera?>(null) }
     val previewView = remember(context) {
         PreviewView(context).apply {
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
@@ -355,8 +404,13 @@ internal fun CameraPreview(
     DisposableEffect(lensFacing, lifecycleOwner) {
         var disposed = false
         var provider: ProcessCameraProvider? = null
+        var latestStatus = CameraPreviewStatus()
+        var zoomObserver: androidx.lifecycle.Observer<ZoomState>? = null
+        var zoomLiveData: androidx.lifecycle.LiveData<ZoomState>? = null
         fun publish(status: CameraPreviewStatus) {
+            latestStatus = status
             currentCapture = status.imageCapture
+            currentCamera = status.camera
             currentOnStatus(status)
         }
         publish(CameraPreviewStatus())
@@ -375,11 +429,43 @@ internal fun CameraPreview(
                         .build()
                     val selector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
                     provider?.unbindAll()
-                    provider?.bindToLifecycle(lifecycleOwner, selector, preview, capture)
+                    val camera = provider?.bindToLifecycle(
+                        lifecycleOwner,
+                        selector,
+                        preview,
+                        capture,
+                    )
                     val canFlip = runCatching {
                         provider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) == true
                     }.getOrDefault(false)
-                    publish(CameraPreviewStatus(capture, ready = true, canFlip = canFlip))
+                    val zoomState = camera?.cameraInfo?.zoomState
+                    val current = zoomState?.value
+                    publish(
+                        CameraPreviewStatus(
+                            imageCapture = capture,
+                            ready = true,
+                            canFlip = canFlip,
+                            zoomRatio = current?.zoomRatio ?: 1f,
+                            minZoom = current?.minZoomRatio ?: 1f,
+                            maxZoom = current?.maxZoomRatio ?: 1f,
+                            camera = camera,
+                        ),
+                    )
+                    if (zoomState != null) {
+                        val observer = androidx.lifecycle.Observer<ZoomState> { state ->
+                            if (disposed) return@Observer
+                            publish(
+                                latestStatus.copy(
+                                    zoomRatio = state.zoomRatio,
+                                    minZoom = state.minZoomRatio,
+                                    maxZoom = state.maxZoomRatio,
+                                ),
+                            )
+                        }
+                        zoomObserver = observer
+                        zoomLiveData = zoomState
+                        zoomState.observe(lifecycleOwner, observer)
+                    }
                 } catch (_: Exception) {
                     publish(CameraPreviewStatus(failed = true))
                 }
@@ -388,10 +474,23 @@ internal fun CameraPreview(
         )
         onDispose {
             disposed = true
+            zoomObserver?.let { observer -> zoomLiveData?.removeObserver(observer) }
+            zoomObserver = null
+            zoomLiveData = null
             publish(CameraPreviewStatus())
             future.cancel(true)
             provider?.unbindAll()
         }
+    }
+
+    // A new requested ratio is clamped against the BOUND camera's own range and written through
+    // CameraControl. The visual value still comes from the ZoomState observer above.
+    LaunchedEffect(zoomRatio, currentCamera) {
+        val camera = currentCamera ?: return@LaunchedEffect
+        val requested = zoomRatio ?: return@LaunchedEffect
+        val state = camera.cameraInfo.zoomState.value ?: return@LaunchedEffect
+        val target = clampZoomRatio(requested, state.minZoomRatio, state.maxZoomRatio)
+        runCatching { camera.cameraControl.setZoomRatio(target) }
     }
 
     Box(modifier) {

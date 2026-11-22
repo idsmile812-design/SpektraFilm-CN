@@ -38,7 +38,11 @@ class ExportCacheKeyTest {
         saturation: Float = 0f,
         vibrance: Float = 0f,
         gamut: Float = 0f,
-    ) = ExportCacheKey.Grade(cctf, saturation, vibrance, gamut, emptyList())
+        finishing: String = "",
+        displayExposure: Float = 0f,
+    ) = ExportCacheKey.Grade(
+        cctf, saturation, vibrance, gamut, emptyList(), finishing, displayExposure,
+    )
 
     private fun descriptor(format: ExportFormat = ExportFormat.TIFF) =
         ExportOptions(
@@ -92,6 +96,49 @@ class ExportCacheKeyTest {
         assertNotEquals("saturation", base, key(grade = grade(saturation = 1f)))
         assertNotEquals("vibrance", base, key(grade = grade(vibrance = 1f)))
         assertNotEquals("gamut compression", base, key(grade = grade(gamut = 1f)))
+        assertNotEquals(
+            "workbench display exposure", base, key(grade = grade(displayExposure = 1f)),
+        )
+    }
+
+    @Test
+    fun `workbench finishing participates in the export key`() {
+        val base = key()
+        val noneAndOff = WorkbenchFinishingConfig()
+        val white = WorkbenchFinishingConfig(border = WorkbenchBorder.WHITE)
+        val black = WorkbenchFinishingConfig(border = WorkbenchBorder.BLACK)
+        val date = WorkbenchFinishingConfig(date = WorkbenchDate.DATE)
+        val dateTime = WorkbenchFinishingConfig(date = WorkbenchDate.DATE_TIME)
+        val dateAtOne = WorkbenchFinishingConfig(
+            date = WorkbenchDate.DATE,
+            captureTimestampMs = 1_000L,
+        )
+        val dateAtTwo = WorkbenchFinishingConfig(
+            date = WorkbenchDate.DATE,
+            captureTimestampMs = 2_000L,
+        )
+
+        assertNotEquals("white border", base, key(grade = grade(finishing = white.cacheKey())))
+        assertNotEquals("black border", base, key(grade = grade(finishing = black.cacheKey())))
+        assertNotEquals("date", base, key(grade = grade(finishing = date.cacheKey())))
+        assertNotEquals("date+time", base, key(grade = grade(finishing = dateTime.cacheKey())))
+        assertNotEquals(
+            "the frozen capture timestamp",
+            key(grade = grade(finishing = dateAtOne.cacheKey())),
+            key(grade = grade(finishing = dateAtTwo.cacheKey())),
+        )
+        assertNotEquals(
+            "white vs black",
+            key(grade = grade(finishing = white.cacheKey())),
+            key(grade = grade(finishing = black.cacheKey())),
+        )
+        // NONE+OFF is explicitly the legacy identity: it contributes nothing, so a default
+        // Grade and an identity finishing key produce the same key material.
+        assertEquals("", noneAndOff.cacheKey())
+        assertEquals(
+            key(grade = grade()),
+            key(grade = grade(finishing = noneAndOff.cacheKey())),
+        )
     }
 
     @Test

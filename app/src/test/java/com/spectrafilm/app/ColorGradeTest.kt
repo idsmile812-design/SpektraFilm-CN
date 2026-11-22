@@ -105,6 +105,23 @@ class ColorGradeTest {
     }
 
     @Test
+    fun displayExposure_changesBrightnessWithoutChangingZeroDefaults() {
+        val source = floatArrayOf(0.25f, 0.4f, 0.55f)
+        val brighter = buf(*source).also {
+            ColorGrade.applyInPlace(
+                it, 1, 1, ColorSpace.SRGB, true, 0f, 0f, exposureEv = 1f,
+            )
+        }
+        val darker = buf(*source).also {
+            ColorGrade.applyInPlace(
+                it, 1, 1, ColorSpace.SRGB, true, 0f, 0f, exposureEv = -1f,
+            )
+        }
+        assertTrue(read(brighter, 0) > source[0])
+        assertTrue(read(darker, 0) < source[0])
+    }
+
+    @Test
     fun outputStaysInRange() {
         // An extreme push must still clamp into [0,1] (no NaN/overflow from gamut excursions).
         val b = buf(0.95f, 0.05f, 0.02f, 0.1f, 0.9f, 0.85f)

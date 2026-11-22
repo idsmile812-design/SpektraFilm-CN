@@ -1466,6 +1466,7 @@ class MainActivity : ComponentActivity() {
             )
         }
         var showSourcePicker by remember { mutableStateOf(false) }
+        var finishingUnsupportedFormat by remember { mutableStateOf<ExportFormat?>(null) }
         var workbenchActive by rememberSaveable { mutableStateOf(true) }
         var cameraOpen by rememberSaveable {
             mutableStateOf(restoredSource.kind == SourceKind.DEMO)
@@ -1900,7 +1901,12 @@ class MainActivity : ComponentActivity() {
                     when (val outcome = claimedOutcome) {
                         is ExportTerminalOutcome.Success -> {
                             outcome.bitmap?.let { bitmap ->
-                                if (publicationAllowed) {
+                                // The workbench photo mode owns its preview and composites the
+                                // border/date itself. Publishing an already-finished export proxy
+                                // there would print the frame a second time.
+                                val workbenchOwnsPreview =
+                                    workbenchActive && !cameraOpen && sourceKind != SourceKind.DEMO
+                                if (publicationAllowed && !workbenchOwnsPreview) {
                                     preview = bitmap
                                 } else if (!bitmap.isRecycled) {
                                     bitmap.recycle()
@@ -2464,7 +2470,11 @@ class MainActivity : ComponentActivity() {
             previewTick++
         }
 
-        fun applyBuiltIn(preset: BuiltInPreset, announce: Boolean = true) {
+        fun applyBuiltIn(
+            preset: BuiltInPreset,
+            announce: Boolean = true,
+            publishPreview: Boolean = true,
+        ) {
             val now = runCatching { Presets.toJsonString(state) }.getOrNull()
             val baseline = presetRunBaseline(
                 now = now,
@@ -2490,14 +2500,19 @@ class MainActivity : ComponentActivity() {
                     ),
                 )
             }
-            previewTick++
+            if (publishPreview) previewTick++
         }
 
         fun applyWorkbenchSelection(selection: WorkbenchSelection) {
             val preset = builtInGroups.values.flatten().firstOrNull { it.id == selection.presetId }
                 ?: return
-            applyBuiltIn(preset, announce = false)
+            // The preset must be the base for every adjustment update, but the preview tick may
+            // only fire once, AFTER the offsets are on the state. Bumping it inside applyBuiltIn
+            // would publish a frame of the unadjusted preset and schedule a second render for the
+            // same edit.
+            applyBuiltIn(preset, announce = false, publishPreview = false)
             selection.applyAdjustments(state)
+            previewTick++
         }
 
         fun adoptSource(
@@ -2534,6 +2549,13 @@ class MainActivity : ComponentActivity() {
                         sourceName = displayName
                         sourceAuthorizationRequired = false
                         if (switched) rotation = SourceRotation.NONE
+                        // A new photograph gets ONE capture time. Re-exporting or re-editing the
+                        // same source never refreshes it, so the printed date stays stable.
+                        if (switched) {
+                            workbenchSelection = workbenchSelection.copy(
+                                captureTimestampMs = System.currentTimeMillis(),
+                            )
+                        }
                         status = if (ref.accessMode == SourceAccessMode.PERSISTED) {
                             readyStatus
                         } else {
@@ -2596,11 +2618,12 @@ class MainActivity : ComponentActivity() {
 
         fun workbenchConfiguration(): (() -> Unit)? {
             if (!workbenchActive) return null
-            val selection = workbenchSelection
+            // Read the selection INSIDE the callback: adoptSource may have just stamped the new
+            // capture time, and this closure must apply that final state, not a pre-import copy.
             return {
                 cameraOpen = false
                 activeCategory = null
-                applyWorkbenchSelection(selection)
+                applyWorkbenchSelection(workbenchSelection)
             }
         }
 
@@ -3212,7 +3235,7 @@ class MainActivity : ComponentActivity() {
                                     gradeBufferToBitmap(scratch, pristine.width,
                                         pristine.height, pristine.colorSpace, state.savingCctfEncoding,
                                         state.saturation, state.vibrance, state.gamutCompress,
-                                        state.localAdjustments)
+                                        state.localAdjustments, exposureEv = state.displayExposureEv)
                                 }
                             }
                         }
@@ -3264,7 +3287,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }.use { res ->
                                 renderId = res.renderId
-                                simResultToBitmapGraded(res, state.savingCctfEncoding, state.saturation, state.vibrance, state.gamutCompress, state.localAdjustments)
+                                simResultToBitmapGraded(res, state.savingCctfEncoding, state.saturation, state.vibrance, state.gamutCompress, state.localAdjustments, exposureEv = state.displayExposureEv)
                             }
                         }
                     }
@@ -3353,7 +3376,7 @@ class MainActivity : ComponentActivity() {
                                         gradeBufferToBitmap(scratch, cached.width,
                                             cached.height, cached.colorSpace, state.savingCctfEncoding,
                                             state.saturation, state.vibrance, state.gamutCompress,
-                                            state.localAdjustments)
+                                            state.localAdjustments, exposureEv = state.displayExposureEv)
                                     }
                                     after = rendered
                                     val submission = Triple(prevBefore, rendered, false)
@@ -3417,6 +3440,7 @@ class MainActivity : ComponentActivity() {
                                                 state.vibrance,
                                                 state.gamutCompress,
                                                 state.localAdjustments,
+                                                exposureEv = state.displayExposureEv,
                                             ).also { bitmap -> after = bitmap }
                                             // The test seam is exactly the completed native settle's
                                             // production completion-before-publication boundary. The
@@ -5033,6 +5057,23 @@ class MainActivity : ComponentActivity() {
                                 Toast.makeText(uiContext, status, Toast.LENGTH_LONG).show()
                                 return@export
                             }
+                            // The border/date print is a Bitmap finish. The native high-bit
+                            // writers consume the float buffer directly, and scene-linear is the
+                            // undecorated linear input — refuse BEFORE any work starts rather than
+                            // silently dropping the decoration or demoting the bit depth.
+                            val exportFinishing =
+                                if (workbenchActive && !cameraOpen && sourceKind != SourceKind.DEMO) {
+                                    workbenchSelection.finishingConfig()
+                                } else {
+                                    WorkbenchFinishingConfig()
+                                }
+                            if (!exportFinishing.isIdentity &&
+                                (outputDescriptor.format.isHighBitDepth() ||
+                                    outputDescriptor.format == ExportFormat.SCENE_LINEAR_TIFF)
+                            ) {
+                                finishingUnsupportedFormat = outputDescriptor.format
+                                return@export
+                            }
                             showExportSheet = false
                             // Remember the choices as the new Settings defaults.
                             settings.exportFormat = exportOptions.format
@@ -5059,6 +5100,7 @@ class MainActivity : ComponentActivity() {
                             val exportVibrance = state.vibrance
                             val exportGamutCompress = state.gamutCompress
                             val exportAdjustments = state.localAdjustments.toList()
+                            val exportDisplayExposureEv = state.displayExposureEv
                             val exportJpegQuality = exportOptions.jpegQuality
                             val exportSourceUri = sourceUri
                             val exportDecodeRequest = currentSourceDecodeRequest()
@@ -5069,6 +5111,8 @@ class MainActivity : ComponentActivity() {
                             val exportGradeKey = ExportCacheKey.Grade(
                                 exportCctf, exportSaturation, exportVibrance,
                                 exportGamutCompress, exportAdjustments,
+                                finishingKey = exportFinishing.cacheKey(),
+                                displayExposureEv = exportDisplayExposureEv,
                             )
                             val launched = ExportWorkRuntime.launch(
                                 context = exportContext,
@@ -5262,6 +5306,7 @@ class MainActivity : ComponentActivity() {
                                                         exportVibrance,
                                                         exportGamutCompress,
                                                         exportAdjustments,
+                                                        exposureEv = exportDisplayExposureEv,
                                                     )
                                                     // Take ownership immediately. If downscaling or any
                                                     // pre-commit step throws, the outer failure path recycles it.
@@ -5277,6 +5322,23 @@ class MainActivity : ComponentActivity() {
                                                             }
                                                         }
                                                     } ?: full
+                                                    // Print finishing runs AFTER grading/downscale
+                                                    // and BEFORE encoding. A new bitmap is owned
+                                                    // here; the sized render is retired only once the
+                                                    // copy exists, and the source is never recycled
+                                                    // by the finishing step itself.
+                                                    val decorated = if (exportFinishing.isIdentity) {
+                                                        sized
+                                                    } else {
+                                                        val finished =
+                                                            WorkbenchFinishing.render(sized, exportFinishing)
+                                                        if (finished !== sized) {
+                                                            previewCandidate = finished
+                                                            runCatching { sized.recycle() }
+                                                        }
+                                                        finished
+                                                    }
+                                                    previewCandidate = decorated
                                                     // #140: derive the Ultra HDR gain map from the
                                                     // render itself, here, while the engine's float
                                                     // buffer is still alive — it holds the values
@@ -5285,12 +5347,12 @@ class MainActivity : ComponentActivity() {
                                                     // this pipeline has.
                                                     if (outputDescriptor.metadata.hdrGainMap != null) {
                                                         runCatching {
-                                                            attachRenderedGainmap(res, sized, outputDescriptor)
+                                                            attachRenderedGainmap(res, decorated, outputDescriptor)
                                                         }.onFailure {
                                                             Diag.w("gain map failed; exporting SDR base: $it")
                                                         }
                                                     }
-                                                    sized
+                                                    decorated
                                                 } else {
                                                     // Preserve WYSIWYG grading in the writer's float source while
                                                     // avoiding the additional ~4 bytes/pixel full-res Bitmap.
@@ -5299,6 +5361,7 @@ class MainActivity : ComponentActivity() {
                                                             lease.data, res.width, res.height, res.colorSpace,
                                                             exportCctf, exportSaturation, exportVibrance,
                                                             exportGamutCompress,
+                                                            exposureEv = exportDisplayExposureEv,
                                                         )
                                                         MaskCompositor.applyInPlace(
                                                             lease.data, res.width, res.height, res.colorSpace,
@@ -5471,14 +5534,43 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
+            finishingUnsupportedFormat?.let { blockedFormat ->
+                AlertDialog(
+                    onDismissRequest = { finishingUnsupportedFormat = null },
+                    title = {
+                        Text(stringResource(R.string.workbench_finishing_unsupported_title))
+                    },
+                    text = {
+                        Text(
+                            stringResource(
+                                R.string.workbench_finishing_unsupported_body,
+                                stringResource(blockedFormat.labelRes),
+                            ),
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { finishingUnsupportedFormat = null }) {
+                            Text(stringResource(R.string.workbench_finishing_unsupported_ok))
+                        }
+                    },
+                )
+            }
+
             if (workbenchActive) {
                 WorkbenchScreen(
                     selection = workbenchSelection,
                     onSelectionChange = { updated ->
                         val previous = workbenchSelection
                         workbenchSelection = updated
+                        // Border/date/lens/flash change only the pending print configuration.
+                        // They must not re-run the film engine; the workbench composites them
+                        // onto the already graded preview.
+                        val adjustmentsChanged =
+                            updated.exposureEv != previous.exposureEv ||
+                                updated.grain != previous.grain ||
+                                updated.halation != previous.halation
                         if (!cameraOpen && sourceKind != SourceKind.DEMO &&
-                            updated.presetId == previous.presetId
+                            updated.presetId == previous.presetId && adjustmentsChanged
                         ) {
                             applyWorkbenchSelection(updated)
                         }
@@ -5505,14 +5597,20 @@ class MainActivity : ComponentActivity() {
                     onUsePhoto = { uri, selection ->
                         cameraOpen = false
                         activeCategory = null
+                        // Keep the adjustments chosen while framing; adoptSource stamps the one
+                        // capture timestamp for this new photograph.
+                        workbenchSelection = selection
                         adoptSource(
                             uri = uri,
                             kind = SourceKind.PHOTO,
                             displayName = uiContext.getString(R.string.camera_capture_name),
                             readyStatus = uiContext.getString(R.string.editor_status_photo_selected),
-                            afterApplied = { applyWorkbenchSelection(selection) },
+                            // Read the persisted selection after adoption stamped the new
+                            // capture time, so the very first render uses the final config.
+                            afterApplied = { applyWorkbenchSelection(workbenchSelection) },
                         )
                     },
+                    onSavePhoto = { showExportSheet = true },
                 )
             }
 

@@ -69,7 +69,7 @@ executable source for direct review:
 
 | Fact | Current value | Executable source |
 |---|---|---|
-| App version | `0.12.1` / versionCode `15` | `app/build.gradle.kts` |
+| App version | `0.13.0` / versionCode `16` | `app/build.gradle.kts` |
 | Android SDK | min 24, target 36, compile 37 | Gradle module build files |
 | Build system | AGP `9.3.2`, Kotlin `2.2.10`, Gradle `9.5.1` | version catalog + wrapper properties (AGP built-in Kotlin; JDK 21 locally, in CI and in release) |
 | Native toolchain | NDK `28.2.13676358`, CMake `3.22.1` | Gradle + CI/release workflows |

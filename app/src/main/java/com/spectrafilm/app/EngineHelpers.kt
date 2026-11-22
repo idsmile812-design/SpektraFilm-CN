@@ -880,7 +880,7 @@ private fun createTaggedBitmap(w: Int, h: Int, cs: ColorSpace): Bitmap {
 }
 
 /**
- * Apply the creative output grade (gamut compression + Saturation/Vibrance) AND the local-adjustment
+ * Apply the creative output grade (display exposure, gamut compression, Saturation/Vibrance) AND the local-adjustment
  * masks in place to [res]'s leased output buffer, then convert to a bitmap. Mutating that buffer means
  * a subsequent 16-bit export ([saveSimResultAsTiff] / [saveSimResultAsPng16]) that reads the SAME [res]
  * inherits both — so preview and every export format stay WYSIWYG. Masks run AFTER the global grade
@@ -894,6 +894,7 @@ fun simResultToBitmapGraded(
     gamutCompress: Float,
     localAdjustments: List<LocalAdjustment> = emptyList(),
     cancellation: RenderCancellation? = null,
+    exposureEv: Float = 0f,
 ): Bitmap = res.acquireDataLease().use { lease ->
     val data = lease.data
     gradeBufferToBitmap(
@@ -907,6 +908,7 @@ fun simResultToBitmapGraded(
         gamutCompress,
         localAdjustments,
         cancellation,
+        exposureEv,
     )
 }
 
@@ -928,8 +930,12 @@ fun gradeBufferToBitmap(
     gamutCompress: Float,
     localAdjustments: List<LocalAdjustment> = emptyList(),
     cancellation: RenderCancellation? = null,
+    exposureEv: Float = 0f,
 ): Bitmap {
-    ColorGrade.applyInPlace(data, width, height, colorSpace, cctfEncoded, saturation, vibrance, gamutCompress)
+    ColorGrade.applyInPlace(
+        data, width, height, colorSpace, cctfEncoded, saturation, vibrance, gamutCompress,
+        exposureEv = exposureEv,
+    )
     if (cancellation == null) {
         MaskCompositor.applyInPlace(data, width, height, colorSpace, cctfEncoded, localAdjustments)
     } else {
